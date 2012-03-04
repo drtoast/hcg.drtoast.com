@@ -30,7 +30,7 @@ body {
 
 #page {
 	background-color: white;
-	border: 1px solid #959596;
+	border: none;
 	text-align: left;
 	}
 
@@ -218,7 +218,6 @@ body {
 	margin: 20px auto;
 	padding: 0;
 	width: 760px;
-	border: 1px solid #959596;
 	}
 
 #header {

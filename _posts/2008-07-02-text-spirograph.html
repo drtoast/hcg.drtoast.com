@@ -1,0 +1,41 @@
+---
+layout: post
+title: Text Spirograph
+wordpress_id: 33
+date: 2008-07-02 01:10:25.000000000 -07:00
+tags:
+- text
+---
+<a href="/uploads/2008/07/text-spirograph.png"><img class="aligncenter size-full wp-image-34" title="text-spirograph" src="/uploads/2008/07/text-spirograph.png" alt="" width="400" height="400" /></a>
+<br />
+Text can be positioned and scaled arbitrarily on the canvas, rendered using any font that is installed on your system.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">spiro.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">beige</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Book Antiqua</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">12</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
+<br />
+<span class="comment"># rotate, draw text, repeat</span>
+<span class="keyword">for</span> <span class="ident">frame</span> <span class="keyword">in</span> <span class="number">1</span><span class="punct">..</span><span class="number">180</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">push</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">((</span><span class="ident">frame</span><span class="punct">*</span><span class="number">2</span><span class="punct">)</span> <span class="punct">+</span> <span class="number">120</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">70</span><span class="punct">,</span><span class="number">0</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">Going ...</span><span class="punct">&quot;,</span> <span class="number">80</span><span class="punct">,</span> <span class="number">0</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="ident">frame</span> <span class="punct">*</span> <span class="number">6</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">Around and</span><span class="punct">&quot;,</span> <span class="number">20</span><span class="punct">,</span> <span class="number">0</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">pop</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span>
+</pre>

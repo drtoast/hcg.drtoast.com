@@ -1,0 +1,21 @@
+Redirect 301 /standalone-library/ http://hcg.drtoast.com/2011-04-27-standalone-library
+Redirect 301 /text-spirograph/ http://hcg.drtoast.com/2008-07-02-text-spirograph
+Redirect 301 /substrate/ http://hcg.drtoast.com/2008-07-02-substrate
+Redirect 301 /randomizing-paths/ http://hcg.drtoast.com/2008-07-02-randomizing-paths
+Redirect 301 /particlesflowers/ http://hcg.drtoast.com/2008-07-02-particlesflowers
+Redirect 301 /iterating-paths/ http://hcg.drtoast.com/2008-07-02-iterating-paths
+Redirect 301 /image-moving-and-scaling/ http://hcg.drtoast.com/2008-07-02-image-moving-and-scaling
+Redirect 301 /image-effects/ http://hcg.drtoast.com/2008-07-02-image-effects
+Redirect 301 /image-color-adjustments/ http://hcg.drtoast.com/2008-07-02-image-color-adjustments
+Redirect 301 /image-blend-modes/ http://hcg.drtoast.com/2008-07-02-image-blend-modes
+Redirect 301 /drawing-ribbons/ http://hcg.drtoast.com/2008-07-02-drawing-ribbons
+Redirect 301 /drawing-hair/ http://hcg.drtoast.com/2008-07-02-drawing-hair
+Redirect 301 /gradients/ http://hcg.drtoast.com/2008-06-30-gradients
+Redirect 301 /color-parsing/ http://hcg.drtoast.com/2008-06-30-color-parsing
+Redirect 301 /color-rules/ http://hcg.drtoast.com/2008-06-30-color-rules
+
+Options +MultiViews
+
+# External redirect any /post-slug.html to /post-slug
+RewriteCond %{THE_REQUEST} [A-Z]+\s([^\s]+)\.html\s
+RewriteRule .* %1 [R=301,L]

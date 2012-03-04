@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>Substrate</title>
+   <meta name="author" content="James Reynolds" />
+    <!--<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />-->
+    <link rel="stylesheet" href="/css/wordpress.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+
+<div id="page">
+
+  <!-- header -->
+  <div id="header">
+    <div id="headerimg" onclick="location.href='http://hcg.drtoast.com';" style="cursor:pointer;">
+      <h1><a href="http://hcg.drtoast.com/"></a></h1>
+      <div class="description"></div>
+    </div>
+  </div>
+  <hr />
+
+  <!-- main content -->
+  <div id="content" class="narrowcolumn">
+    <div id="post">
+  <h3 class='entry-title'>Substrate</h3>
+  <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span><br />
+
+  <p><a href="/uploads/2008/07/drawing-substrate.png"><img class="aligncenter size-full wp-image-32" title="drawing-substrate" src="/uploads/2008/07/drawing-substrate.png" alt="" width="400" height="400" /></a>
+<br />
+This example is based on "Substrate" by Jared Tarbell (<a href="http://complexification.net" target="_blank">complexification.net</a>).  Some modifications were made to the color rendering algorithm.
+<br />
+(Warning: the new MacRuby version eats a lot more memory than the older RubyCocoa version, so you may want to lower the number of cracks or frames)
+
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="comment"># Ported to HotCocoa::Graphics by James Reynolds 6/1/2008 from:</span>
+<span class="comment"># Substrate Watercolor</span>
+<span class="comment"># j.tarbell   June, 2004</span>
+<span class="comment"># Albuquerque, New Mexico</span>
+<span class="comment"># complexification.net</span>
+<br />
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="constant">FRAMES</span> <span class="punct">=</span> <span class="number">800</span>
+<span class="constant">DIMX</span> <span class="punct">=</span> <span class="number">400</span>
+<span class="constant">DIMY</span> <span class="punct">=</span> <span class="number">400</span>
+<br />
+<span class="comment"># sand painters</span>
+<span class="constant">COLORSIZE</span> <span class="punct">=</span> <span class="number">2.0</span>
+<span class="constant">CRACKSIZE</span> <span class="punct">=</span> <span class="number">1.0</span>
+<span class="constant">MAXCRACKS</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="constant">SANDGRAINS</span> <span class="punct">=</span> <span class="number">64</span>
+<br />
+<span class="comment"># color parameters</span>
+<span class="constant">MAXPAL</span> <span class="punct">=</span> <span class="number">256</span>
+<span class="constant">NUMPAL</span> <span class="punct">=</span> <span class="number">0</span>
+<span class="constant">HUEDRIFT</span> <span class="punct">=</span> <span class="number">0.0</span>
+<br />
+<span class="comment"># grab colors</span>
+<span class="ident">i</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">')</span>
+<span class="constant">GOODCOLOR</span> <span class="punct">=</span> <span class="ident">i</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="constant">MAXPAL</span><span class="punct">)</span>
+<br />
+<span class="comment"># grid of CRACKS</span>
+<span class="constant">CGRID</span> <span class="punct">=</span> <span class="constant">Array</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="constant">DIMX</span><span class="punct">*</span><span class="constant">DIMY</span><span class="punct">);</span>
+<span class="constant">CRACKS</span> <span class="punct">=</span> <span class="constant">Array</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="constant">MAXCRACKS</span><span class="punct">);</span>
+<span class="global">$numcracks</span> <span class="punct">=</span> <span class="number">0</span><span class="punct">;</span>
+<span class="constant">C</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">substrate.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="constant">C</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">);</span>
+<br />
+<span class="comment"># METHODS --------------------------------------------------</span>
+<br />
+<span class="keyword">def </span><span class="method">makeCrack</span><span class="punct">()</span>
+  <span class="keyword">if</span> <span class="punct">(</span><span class="global">$numcracks</span><span class="punct">&lt;</span><span class="constant">MAXCRACKS</span><span class="punct">)</span>
+    <span class="comment"># make a new crack instance</span>
+    <span class="constant">CRACKS</span><span class="punct">[</span><span class="global">$numcracks</span><span class="punct">]</span> <span class="punct">=</span> <span class="constant">Crack</span><span class="punct">.</span><span class="ident">new</span>
+    <span class="global">$numcracks</span> <span class="punct">+=</span> <span class="number">1</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="keyword">def </span><span class="method">beginstuff</span>
+  <span class="comment"># erase crack grid</span>
+  <span class="keyword">for</span> <span class="ident">y</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="constant">DIMY</span> <span class="keyword">do</span>
+    <span class="keyword">for</span> <span class="ident">x</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="constant">DIMX</span> <span class="keyword">do</span>
+      <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">y</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">x</span><span class="punct">]</span> <span class="punct">=</span> <span class="number">10001</span><span class="punct">;</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  <span class="comment"># make random crack seeds</span>
+  <span class="keyword">for</span> <span class="ident">k</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="number">16</span> <span class="keyword">do</span>
+    <span class="ident">i</span> <span class="punct">=</span> <span class="ident">rand</span><span class="punct">(</span><span class="constant">DIMX</span><span class="punct">*</span><span class="constant">DIMY</span><span class="punct">-</span><span class="number">1</span><span class="punct">)</span>
+    <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">i</span><span class="punct">]=</span><span class="ident">rand</span><span class="punct">(</span><span class="number">360</span><span class="punct">)</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="comment"># make just three CRACKS</span>
+  <span class="global">$numcracks</span><span class="punct">=</span><span class="number">0</span><span class="punct">;</span>
+  <span class="keyword">for</span> <span class="ident">k</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="number">3</span> <span class="keyword">do</span>
+    <span class="ident">makeCrack</span><span class="punct">()</span>
+  <span class="keyword">end</span>
+  <span class="constant">C</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">);</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># OBJECTS -------------------------------------------------------</span>
+<br />
+<span class="keyword">class </span><span class="class">Crack</span>
+<br />
+  <span class="keyword">def </span><span class="method">initialize</span>
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">Crack.new</span><span class="punct">&quot;</span>
+    <span class="comment"># find placement along existing crack</span>
+    <span class="attribute">@sp</span> <span class="punct">=</span> <span class="constant">SandPainter</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="constant">C</span><span class="punct">)</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">grains</span> <span class="punct">=</span> <span class="constant">SANDGRAINS</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">grainsize</span> <span class="punct">=</span> <span class="constant">COLORSIZE</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">huedrift</span> <span class="punct">=</span> <span class="constant">HUEDRIFT</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">color</span> <span class="punct">=</span> <span class="ident">choose</span><span class="punct">(</span><span class="constant">GOODCOLOR</span><span class="punct">)</span>
+    <span class="attribute">@verbose</span> <span class="punct">=</span> <span class="constant">true</span>
+    <span class="ident">findStart</span><span class="punct">();</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">findStart</span><span class="punct">()</span>
+<br />
+    <span class="comment"># pick random point</span>
+    <span class="ident">px</span><span class="punct">=</span><span class="number">0</span><span class="punct">;</span>
+    <span class="ident">py</span><span class="punct">=</span><span class="number">0</span><span class="punct">;</span>
+<br />
+    <span class="comment"># shift until crack is found</span>
+    <span class="ident">found</span><span class="punct">=</span><span class="constant">false</span><span class="punct">;</span>
+    <span class="ident">timeout</span> <span class="punct">=</span> <span class="number">0</span><span class="punct">;</span>
+    <span class="comment">#while ((!found) &amp;&amp; (timeout &lt; 1000))</span>
+    <span class="keyword">while</span> <span class="punct">((!</span><span class="ident">found</span><span class="punct">))</span><span class="comment"># || (timeout &gt; 1000))</span>
+      <span class="ident">px</span> <span class="punct">=</span> <span class="ident">rand</span><span class="punct">(</span><span class="constant">DIMX</span><span class="punct">)</span>
+      <span class="ident">py</span> <span class="punct">=</span> <span class="ident">rand</span><span class="punct">(</span><span class="constant">DIMY</span><span class="punct">)</span>
+      <span class="keyword">if</span> <span class="punct">(</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">py</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">px</span><span class="punct">]&lt;</span><span class="number">10000</span><span class="punct">)</span>
+        <span class="ident">found</span><span class="punct">=</span><span class="constant">true</span><span class="punct">;</span>
+        <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">found crack at <span class="expr">#{px}</span>,<span class="expr">#{py}</span> with angle <span class="expr">#{CGRID[py*DIMX+px]}</span> (<span class="expr">#{found}</span>)</span><span class="punct">&quot;</span> <span class="keyword">if</span> <span class="attribute">@verbose</span>
+      <span class="keyword">else</span>
+        <span class="comment">#puts &quot;checked #{px},#{py}&quot; if @verbose</span>
+      <span class="keyword">end</span>
+      <span class="ident">timeout</span> <span class="punct">+=</span> <span class="number">1</span>
+    <span class="keyword">end</span>
+<br />
+    <span class="keyword">if</span> <span class="punct">(</span><span class="ident">found</span><span class="punct">)</span>
+      <span class="comment"># start crack</span>
+      <span class="ident">a</span> <span class="punct">=</span> <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">py</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">px</span><span class="punct">];</span>
+      <span class="keyword">if</span> <span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">100</span><span class="punct">)&lt;</span><span class="number">50</span><span class="punct">)</span>
+        <span class="ident">a</span><span class="punct">-=</span><span class="number">90</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="number">2</span><span class="punct">,</span><span class="number">2.1</span><span class="punct">)</span><span class="comment">#.to_i;</span>
+      <span class="keyword">else</span>
+        <span class="ident">a</span><span class="punct">+=</span><span class="number">90</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="number">2</span><span class="punct">,</span><span class="number">2.1</span><span class="punct">)</span><span class="comment">#.to_i;</span>
+      <span class="keyword">end</span>
+      <span class="ident">startCrack</span><span class="punct">(</span><span class="ident">px</span><span class="punct">,</span><span class="ident">py</span><span class="punct">,</span><span class="ident">a</span><span class="punct">);</span>
+    <span class="keyword">else</span>
+      <span class="ident">println</span><span class="punct">(&quot;</span><span class="string">timeout: </span><span class="punct">&quot;+</span><span class="ident">timeout</span><span class="punct">);</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">startCrack</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span> <span class="ident">y</span><span class="punct">,</span> <span class="ident">t</span><span class="punct">)</span>
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">starting crack at <span class="expr">#{x}</span>,<span class="expr">#{y}</span> with angle <span class="expr">#{t}</span></span><span class="punct">&quot;</span> <span class="keyword">if</span> <span class="attribute">@verbose</span>
+    <span class="attribute">@x</span><span class="punct">=</span><span class="ident">x</span><span class="punct">;</span>
+    <span class="attribute">@y</span><span class="punct">=</span><span class="ident">y</span><span class="punct">;</span>
+    <span class="attribute">@t</span><span class="punct">=</span><span class="ident">t</span><span class="punct">;</span><span class="comment">#%360;</span>
+    <span class="attribute">@x</span><span class="punct">+=</span><span class="number">0.61</span><span class="punct">*</span><span class="ident">cos</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+    <span class="attribute">@y</span><span class="punct">+=</span><span class="number">0.61</span><span class="punct">*</span><span class="ident">sin</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">move</span><span class="punct">()</span>
+    <span class="comment"># continue cracking</span>
+    <span class="attribute">@x</span><span class="punct">+=</span><span class="number">0.42</span><span class="punct">*</span><span class="ident">cos</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+    <span class="attribute">@y</span><span class="punct">+=</span><span class="number">0.42</span><span class="punct">*</span><span class="ident">sin</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+<br />
+    <span class="comment"># bound check</span>
+    <span class="ident">z</span> <span class="punct">=</span> <span class="number">0.33</span><span class="punct">;</span>
+    <span class="ident">cx</span> <span class="punct">=</span> <span class="punct">(</span><span class="attribute">@x</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">)).</span><span class="ident">to_i</span><span class="punct">;</span>  <span class="comment"># add fuzz</span>
+    <span class="ident">cy</span> <span class="punct">=</span> <span class="punct">(</span><span class="attribute">@y</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">)).</span><span class="ident">to_i</span><span class="punct">;</span>
+<br />
+    <span class="comment"># draw sand painter</span>
+    <span class="ident">regionColor</span><span class="punct">();</span>
+<br />
+    <span class="comment"># draw black crack</span>
+    <span class="constant">C</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">);</span>
+    <span class="constant">C</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="attribute">@x</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">),</span><span class="attribute">@y</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">),</span><span class="constant">CRACKSIZE</span><span class="punct">,</span><span class="constant">CRACKSIZE</span><span class="punct">);</span>
+<br />
+    <span class="keyword">if</span> <span class="punct">((</span><span class="ident">cx</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cx</span><span class="punct">&lt;</span><span class="constant">DIMX</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&lt;</span><span class="constant">DIMY</span><span class="punct">))</span>
+      <span class="comment"># safe to check</span>
+      <span class="keyword">if</span> <span class="punct">((</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]&gt;</span><span class="number">10000</span><span class="punct">)</span> <span class="punct">||</span> <span class="punct">(</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]-</span><span class="attribute">@t</span><span class="punct">).</span><span class="ident">abs</span><span class="punct">&lt;</span><span class="number">5</span><span class="punct">)</span>
+        <span class="comment"># continue cracking</span>
+        <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]=</span><span class="attribute">@t</span><span class="punct">.</span><span class="ident">to_i</span>
+      <span class="keyword">elsif</span> <span class="punct">((</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]-</span><span class="attribute">@t</span><span class="punct">).</span><span class="ident">abs</span><span class="punct">&gt;</span><span class="number">2</span><span class="punct">)</span>
+        <span class="comment"># crack encountered (not self), stop cracking</span>
+        <span class="ident">findStart</span><span class="punct">();</span>
+        <span class="ident">makeCrack</span><span class="punct">();</span>
+      <span class="keyword">end</span>
+    <span class="keyword">else</span>
+      <span class="comment"># out of bounds, stop cracking</span>
+      <span class="ident">findStart</span><span class="punct">();</span>
+      <span class="ident">makeCrack</span><span class="punct">();</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">regionColor</span><span class="punct">()</span>
+    <span class="comment"># start checking one step away</span>
+    <span class="ident">rx</span><span class="punct">=</span><span class="attribute">@x</span><span class="punct">;</span>
+    <span class="ident">ry</span><span class="punct">=</span><span class="attribute">@y</span><span class="punct">;</span>
+    <span class="ident">openspace</span><span class="punct">=</span><span class="constant">true</span><span class="punct">;</span>
+<br />
+    <span class="comment"># find extents of open space</span>
+    <span class="keyword">while</span> <span class="punct">(</span><span class="ident">openspace</span><span class="punct">)</span>
+      <span class="comment"># move perpendicular to crack</span>
+      <span class="ident">rx</span><span class="punct">+=</span><span class="number">0.81</span><span class="punct">*</span><span class="ident">sin</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+      <span class="ident">ry</span><span class="punct">-=</span><span class="number">0.81</span><span class="punct">*</span><span class="ident">cos</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+      <span class="ident">cx</span> <span class="punct">=</span> <span class="ident">rx</span><span class="punct">.</span><span class="ident">to_i</span>
+      <span class="ident">cy</span> <span class="punct">=</span> <span class="ident">ry</span><span class="punct">.</span><span class="ident">to_i</span>
+      <span class="keyword">if</span> <span class="punct">((</span><span class="ident">cx</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cx</span><span class="punct">&lt;</span><span class="constant">DIMX</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&lt;</span><span class="constant">DIMY</span><span class="punct">))</span>
+        <span class="comment"># safe to check</span>
+        <span class="keyword">if</span> <span class="punct">(</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]&gt;</span><span class="number">10000</span><span class="punct">)</span>
+          <span class="comment"># space is open</span>
+        <span class="keyword">else</span>
+          <span class="ident">openspace</span><span class="punct">=</span><span class="constant">false</span><span class="punct">;</span>
+        <span class="keyword">end</span>
+      <span class="keyword">else</span>
+        <span class="ident">openspace</span><span class="punct">=</span><span class="constant">false</span><span class="punct">;</span>
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="comment"># draw sand painter</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">render</span><span class="punct">(</span><span class="attribute">@x</span><span class="punct">,</span><span class="attribute">@y</span><span class="punct">,</span><span class="ident">rx</span><span class="punct">,</span><span class="ident">ry</span><span class="punct">);</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="ident">beginstuff</span>
+<br />
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">..</span><span class="constant">FRAMES</span> <span class="keyword">do</span>
+  <span class="comment"># crack all CRACKS</span>
+  <span class="keyword">for</span> <span class="ident">n</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="global">$numcracks</span> <span class="keyword">do</span>
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">frame <span class="expr">#{i}</span> moving crack <span class="expr">#{n}</span></span><span class="punct">&quot;</span>
+    <span class="constant">CRACKS</span><span class="punct">[</span><span class="ident">n</span><span class="punct">].</span><span class="ident">move</span><span class="punct">();</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="constant">C</span><span class="punct">.</span><span class="ident">save</span>
+</pre>
+</p>
+</div>
+
+
+
+  </div>
+
+  <!-- Right Column -->
+  <div id="sidebar">
+    <ul>
+      <!-- Recent Posts -->
+      <li class="pagenav">
+        <h2>Recent</h2>
+        <ul>
+          
+          <li class="page-item"><a href="/2011/04/27/standalone-library">Standalone Library</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/text-spirograph">Text Spirograph</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/iterating-paths">Iterating Paths</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></li>
+          
+        </ul>
+      </li>
+
+      <!-- Links -->
+      <li class="pagenav">
+        <h2>Links</h2>
+        <ul>
+          <li class="page-item"><a href="http://github.com/drtoast/macruby_graphics">download library</a></li>
+          <li class="page-item"><a href="http://github.com/drtoast">github.com/drtoast</a></li>
+          <li class="page-item"><a href="http://twitter.com/drtoast">twitter.com/drtoast</a></li>
+          <li class="page-item"><a href="http://drtoast.com">drtoast.com</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <hr />
+  <div id="footer">
+    <p class='entry-meta'>Copyright &copy; 2008-2012 <a href="http://github.com/drtoast">James Reynolds</a></p>
+  </div>
+
+</div>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-546935-4");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics end -->
+
+</body>
+</html>

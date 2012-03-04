@@ -1,0 +1,55 @@
+---
+layout: post
+title: Color Rules
+wordpress_id: 5
+date: 2008-06-29 23:55:23.000000000 -07:00
+tags:
+- color
+---
+<p style="text-align: center;"><span style="color: #0000ee; text-decoration: underline;"><a href="/uploads/2008/06/color-rules.png"></a><a href="/uploads/2008/07/color-harmony.png"><img class="aligncenter size-full wp-image-18" title="color-harmony" src="/uploads/2008/07/color-harmony.png" alt="" width="400" height="400" /></a>
+</span></p>
+<p style="text-align: left;">Various sets of colors can be generated from a single starting color by using the various classical color harmony schemes.Â  For more information, see <a href="http://en.wikipedia.org/wiki/Color_theory" target="_blank">Color Theory</a> on Wikipedia.</p>
+<br />
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">harmony.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">12</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a new color with the specified red, green, blue, and alpha values</span>
+<span class="ident">blue</span> <span class="punct">=</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="number">0.0</span><span class="punct">,</span><span class="number">0.4</span><span class="punct">,</span><span class="number">0.6</span><span class="punct">,</span><span class="number">1.0</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw the original color</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">135</span><span class="punct">,</span><span class="number">350</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">original color</span><span class="punct">&quot;,-</span><span class="number">115</span><span class="punct">,</span><span class="number">10</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="ident">blue</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">255</span><span class="punct">,</span><span class="number">30</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a rectangle to use as a color swatch</span>
+<span class="ident">swatch</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">15</span><span class="punct">,</span><span class="number">30</span><span class="punct">)</span>
+<span class="ident">swatch</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:x</span><span class="punct">,</span> <span class="number">15</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw harmony schemes derived from this color</span>
+<span class="keyword">for</span> <span class="ident">scheme</span> <span class="keyword">in</span> <span class="punct">[</span>
+  <span class="symbol">:complementary</span><span class="punct">,</span><span class="symbol">:split_complementary</span><span class="punct">,</span><span class="symbol">:left_complement</span><span class="punct">,</span>
+  <span class="symbol">:right_complement</span><span class="punct">,</span><span class="symbol">:monochrome</span><span class="punct">,</span><span class="symbol">:triad</span><span class="punct">,</span><span class="symbol">:tetrad</span><span class="punct">,</span><span class="symbol">:compound</span><span class="punct">,</span>
+  <span class="symbol">:flipped_compound</span>
+  <span class="punct">]</span> <span class="keyword">do</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">0</span><span class="punct">,-</span><span class="number">38</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(</span><span class="ident">scheme</span><span class="punct">,-</span><span class="number">115</span><span class="punct">,</span><span class="number">10</span><span class="punct">)</span>
+  <span class="ident">swatch</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:fill</span><span class="punct">,</span> <span class="ident">blue</span><span class="punct">.</span><span class="ident">send</span><span class="punct">(</span><span class="ident">scheme</span><span class="punct">).</span><span class="ident">sort</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">swatch</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">17</span><span class="punct">)</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span>
+</pre>

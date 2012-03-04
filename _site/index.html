@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>toast haiku</title>
+   <meta name="author" content="James Reynolds" />
+    <!--<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />-->
+    <link rel="stylesheet" href="/css/wordpress.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+
+<div id="page">
+
+  <!-- header -->
+  <div id="header">
+    <div id="headerimg" onclick="location.href='http://hcg.drtoast.com';" style="cursor:pointer;">
+      <h1><a href="http://hcg.drtoast.com/"></a></h1>
+      <div class="description"></div>
+    </div>
+  </div>
+  <hr />
+
+  <!-- main content -->
+  <div id="content" class="narrowcolumn">
+    
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2011/04/27/standalone-library">Standalone Library</a></h3>
+    <span class='entry-meta'>April 27, 2011 | <a href="/tag/news/">news</a></span>
+    <p>A little history and an update: after <a href="http://www.infoether.com">Rich Kilmer</a> integrated my graphics library into Apple's MacRuby project as part of the "HotCocoa" library, the HotCocoa project was split out from MacRuby into its own gem at <a href="https://github.com/richkilmer/hotcocoa">github.com/richkilmer/hotcocoa</a>. Then, <a href="http://merbist.com">Matt Aimonetti</a> extracted the graphics library out of HotCocoa into its OWN standalone library, MacRuby Graphics.  Here's my fork of that project, where future development efforts will be directed:  <a href="https://github.com/drtoast/macruby_graphics">github.com/drtoast/macruby_graphics</a>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span>
+    <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-particles1.png"><img class="size-full wp-image-36 aligncenter" title="drawing-particles1" src="/uploads/2008/07/drawing-particles1.png" alt="" width="400" height="400" /></a></p>
+<br />
+This example uses a system of particles that travel upwards from the bottom of the canvas. Â The paths taken by the particles are rendered as stems, and a "flower" is drawn at each endpoint.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># initialize canvas</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">particles.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># load images and grab colors</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">').</span><span class="ident">saturation</span><span class="punct">(</span><span class="number">1.9</span><span class="punct">)</span>
+<span class="ident">redcolors</span> <span class="punct">=</span> <span class="ident">img</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">').</span><span class="ident">saturation</span><span class="punct">(</span><span class="number">1.9</span><span class="punct">)</span>
+<span class="ident">bluecolors</span> <span class="punct">=</span> <span class="ident">img</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">100</span><span class="punct">)</span>
+<br />
+<span class="comment"># create flower head shape</span>
+<span class="ident">head</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+<span class="ident">petals</span> <span class="punct">=</span> <span class="number">3</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">1</span><span class="punct">..</span><span class="ident">petals</span> <span class="keyword">do</span>
+  <span class="ident">head</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="number">360</span><span class="punct">/</span><span class="ident">petals</span><span class="punct">)</span>
+  <span class="ident">head</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="number">5</span><span class="punct">,</span><span class="number">5</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+  <span class="ident">head</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">17</span><span class="punct">,</span><span class="number">2</span><span class="punct">,</span><span class="number">2</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+<span class="keyword">end</span>
+<span class="comment"># randomize head attributes</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:fill</span><span class="punct">,</span> <span class="ident">redcolors</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:stroke</span><span class="punct">,</span> <span class="ident">bluecolors</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scale</span><span class="punct">,</span> <span class="number">0.2</span><span class="punct">..</span><span class="number">2.0</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">0</span><span class="punct">..</span><span class="number">360</span>
+<br />
+<span class="comment"># create particles</span>
+<span class="ident">total_particles</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="ident">total_iterations</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="ident">particles</span> <span class="punct">=</span> <span class="punct">[]</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_particles</span> <span class="keyword">do</span>
+  <span class="comment"># start particle at random point at bottom of canvas</span>
+  <span class="ident">x</span> <span class="punct">=</span> <span class="ident">random</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span> <span class="punct">-</span> <span class="number">50</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span> <span class="punct">+</span> <span class="number">50</span><span class="punct">)</span>
+  <span class="ident">p</span> <span class="punct">=</span> <span class="constant">Particle</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span><span class="number">0</span><span class="punct">)</span>
+  <span class="ident">p</span><span class="punct">.</span><span class="ident">velocity_x</span> <span class="punct">=</span> <span class="ident">random</span><span class="punct">(-</span><span class="number">0.5</span><span class="punct">,</span><span class="number">0.5</span><span class="punct">)</span>   <span class="comment"># set initial x velocity</span>
+  <span class="ident">p</span><span class="punct">.</span><span class="ident">velocity_y</span> <span class="punct">=</span> <span class="ident">random</span><span class="punct">(</span><span class="number">1.0</span><span class="punct">,</span><span class="number">3.0</span><span class="punct">)</span>    <span class="comment"># set initial y velocity</span>
+  <span class="ident">p</span><span class="punct">.</span><span class="ident">acceleration</span> <span class="punct">=</span> <span class="number">0.1</span>            <span class="comment"># set drag or acceleration</span>
+  <span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">]</span> <span class="punct">=</span> <span class="ident">p</span>          <span class="comment"># add particle to array</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># animate particles</span>
+<span class="keyword">for</span> <span class="ident">frame</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_iterations</span> <span class="keyword">do</span>
+  <span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_particles</span> <span class="keyword">do</span>
+    <span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">move</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># draw particle trails and heads</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_particles</span> <span class="keyword">do</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">push</span>
+  <span class="comment"># choose a stem color</span>
+  <span class="ident">color</span> <span class="punct">=</span> <span class="ident">choose</span><span class="punct">(</span><span class="ident">bluecolors</span><span class="punct">).</span><span class="ident">a</span><span class="punct">(</span><span class="number">0.7</span><span class="punct">).</span><span class="ident">analog</span><span class="punct">(</span><span class="number">20</span><span class="punct">,</span><span class="number">0.7</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">stroke</span><span class="punct">(</span><span class="ident">color</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">strokewidth</span><span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">,</span><span class="number">2.0</span><span class="punct">))</span>
+  <span class="comment"># draw the particle</span>
+  <span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">)</span>
+  <span class="comment"># go to the last particle position and draw the flower head</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">points</span><span class="punct">[-</span><span class="number">1</span><span class="punct">][</span><span class="number">0</span><span class="punct">],</span><span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">points</span><span class="punct">[-</span><span class="number">1</span><span class="punct">][</span><span class="number">1</span><span class="punct">])</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">head</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">pop</span>
+<span class="keyword">end</span>
+<br />
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/text-spirograph">Text Spirograph</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/text/">text</a></span>
+    <p><a href="/uploads/2008/07/text-spirograph.png"><img class="aligncenter size-full wp-image-34" title="text-spirograph" src="/uploads/2008/07/text-spirograph.png" alt="" width="400" height="400" /></a>
+<br />
+Text can be positioned and scaled arbitrarily on the canvas, rendered using any font that is installed on your system.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">spiro.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">beige</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Book Antiqua</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">12</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
+<br />
+<span class="comment"># rotate, draw text, repeat</span>
+<span class="keyword">for</span> <span class="ident">frame</span> <span class="keyword">in</span> <span class="number">1</span><span class="punct">..</span><span class="number">180</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">push</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">((</span><span class="ident">frame</span><span class="punct">*</span><span class="number">2</span><span class="punct">)</span> <span class="punct">+</span> <span class="number">120</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">70</span><span class="punct">,</span><span class="number">0</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">Going ...</span><span class="punct">&quot;,</span> <span class="number">80</span><span class="punct">,</span> <span class="number">0</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="ident">frame</span> <span class="punct">*</span> <span class="number">6</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">Around and</span><span class="punct">&quot;,</span> <span class="number">20</span><span class="punct">,</span> <span class="number">0</span><span class="punct">)</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">pop</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span>
+</pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/iterating-paths">Iterating Paths</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span>
+    <p><a href="/uploads/2008/07/paths-iterating.png"></a><a href="http://rcg.drtoast.com/wp-content/uploads/2008/06/paths-iterating.png"> </a>
+<p style="text-align: center;"><img class="size-full wp-image-17" title="paths-iterating" src="/uploads/2008/07/paths-iterating.png" alt="" width="400" height="400" /></p>
+By sending the "increment" method to a Path object, you can specify changes that will continue to add up or "drift" each time the path is drawn to the canvas.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># create a new 400x400 pixel canvas to draw on</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">iterating.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a petal shape with base at (0,0), size 40x150, and bulge at 30px</span>
+<span class="ident">shape</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">petal</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">150</span><span class="punct">,</span><span class="number">30</span><span class="punct">)</span>
+<span class="comment"># add a circle</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(-</span><span class="number">10</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="number">20</span><span class="punct">)</span>
+<span class="comment"># color it red</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">red</span><span class="punct">)</span>
+<br />
+<span class="comment"># increment shape parameters by the specified amount each iteration,</span>
+<span class="comment"># or by a random value selected from the specified range</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">5.0</span><span class="punct">)</span>
+<span class="comment">#shape.increment(:scale, 0.95)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:scalex</span><span class="punct">,</span> <span class="number">0.99</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:scaley</span><span class="punct">,</span> <span class="number">0.96</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:x</span><span class="punct">,</span> <span class="number">10.0</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:y</span><span class="punct">,</span> <span class="number">12.0</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:hue</span><span class="punct">,-</span><span class="number">0.02</span><span class="punct">..</span><span class="number">0.02</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:saturation</span><span class="punct">,</span> <span class="punct">-</span><span class="number">0.1</span><span class="punct">..</span><span class="number">0.1</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:brightness</span><span class="punct">,</span> <span class="punct">-</span><span class="number">0.1</span><span class="punct">..</span><span class="number">0.1</span><span class="punct">)</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:alpha</span><span class="punct">,</span> <span class="punct">-</span><span class="number">0.1</span><span class="punct">..</span><span class="number">0.1</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw 200 petals on the canvas starting at location 50,200</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">50</span><span class="punct">,</span><span class="number">220</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">shape</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span>
+    <p><p style="text-align: center;"><a href="/uploads/2008/06/paths-randomizing1.png"><img class="size-full wp-image-9" title="paths-randomizing1" src="/uploads/2008/06/paths-randomizing1.png" alt="" width="400" height="400" /></a></p>
+By applying the "randomize" method to a Path object, you can specify attributes that should be randomized each time the object is drawn to the canvas.
+<br />
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># create a new 400x400 pixel canvas to draw on</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">randomizing.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a flower shape</span>
+<span class="ident">shape</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span>
+<span class="ident">petals</span> <span class="punct">=</span> <span class="number">5</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">1</span><span class="punct">..</span><span class="ident">petals</span> <span class="keyword">do</span>
+  <span class="ident">shape</span><span class="punct">.</span><span class="ident">petal</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>       <span class="comment"># petal at x,y with width,height</span>
+  <span class="ident">shape</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="number">360</span> <span class="punct">/</span> <span class="ident">petals</span><span class="punct">)</span>    <span class="comment"># rotate by 1/5th</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># randomize shape parameters</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:fill</span><span class="punct">,</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">.</span><span class="ident">complementary</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:stroke</span><span class="punct">,</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">.</span><span class="ident">complementary</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:strokewidth</span><span class="punct">,</span> <span class="number">1.0</span><span class="punct">..</span><span class="number">10.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">0</span><span class="punct">..</span><span class="number">360</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scale</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scalex</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scaley</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:alpha</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="comment"># shape.randomize :hue, 0.5..0.8</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:saturation</span><span class="punct">,</span> <span class="number">0.0</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:brightness</span><span class="punct">,</span> <span class="number">0.0</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:x</span><span class="punct">,</span> <span class="punct">-</span><span class="number">100.0</span><span class="punct">..</span><span class="number">100.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:y</span><span class="punct">,</span> <span class="punct">-</span><span class="number">100.0</span><span class="punct">..</span><span class="number">100.0</span>
+<br />
+<span class="comment"># draw 50 flowers starting at the center of the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">shape</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/substrate">Substrate</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span>
+    <p><a href="/uploads/2008/07/drawing-substrate.png"><img class="aligncenter size-full wp-image-32" title="drawing-substrate" src="/uploads/2008/07/drawing-substrate.png" alt="" width="400" height="400" /></a>
+<br />
+This example is based on "Substrate" by Jared Tarbell (<a href="http://complexification.net" target="_blank">complexification.net</a>).  Some modifications were made to the color rendering algorithm.
+<br />
+(Warning: the new MacRuby version eats a lot more memory than the older RubyCocoa version, so you may want to lower the number of cracks or frames)
+
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="comment"># Ported to HotCocoa::Graphics by James Reynolds 6/1/2008 from:</span>
+<span class="comment"># Substrate Watercolor</span>
+<span class="comment"># j.tarbell   June, 2004</span>
+<span class="comment"># Albuquerque, New Mexico</span>
+<span class="comment"># complexification.net</span>
+<br />
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="constant">FRAMES</span> <span class="punct">=</span> <span class="number">800</span>
+<span class="constant">DIMX</span> <span class="punct">=</span> <span class="number">400</span>
+<span class="constant">DIMY</span> <span class="punct">=</span> <span class="number">400</span>
+<br />
+<span class="comment"># sand painters</span>
+<span class="constant">COLORSIZE</span> <span class="punct">=</span> <span class="number">2.0</span>
+<span class="constant">CRACKSIZE</span> <span class="punct">=</span> <span class="number">1.0</span>
+<span class="constant">MAXCRACKS</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="constant">SANDGRAINS</span> <span class="punct">=</span> <span class="number">64</span>
+<br />
+<span class="comment"># color parameters</span>
+<span class="constant">MAXPAL</span> <span class="punct">=</span> <span class="number">256</span>
+<span class="constant">NUMPAL</span> <span class="punct">=</span> <span class="number">0</span>
+<span class="constant">HUEDRIFT</span> <span class="punct">=</span> <span class="number">0.0</span>
+<br />
+<span class="comment"># grab colors</span>
+<span class="ident">i</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">')</span>
+<span class="constant">GOODCOLOR</span> <span class="punct">=</span> <span class="ident">i</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="constant">MAXPAL</span><span class="punct">)</span>
+<br />
+<span class="comment"># grid of CRACKS</span>
+<span class="constant">CGRID</span> <span class="punct">=</span> <span class="constant">Array</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="constant">DIMX</span><span class="punct">*</span><span class="constant">DIMY</span><span class="punct">);</span>
+<span class="constant">CRACKS</span> <span class="punct">=</span> <span class="constant">Array</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="constant">MAXCRACKS</span><span class="punct">);</span>
+<span class="global">$numcracks</span> <span class="punct">=</span> <span class="number">0</span><span class="punct">;</span>
+<span class="constant">C</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">substrate.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="constant">C</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">);</span>
+<br />
+<span class="comment"># METHODS --------------------------------------------------</span>
+<br />
+<span class="keyword">def </span><span class="method">makeCrack</span><span class="punct">()</span>
+  <span class="keyword">if</span> <span class="punct">(</span><span class="global">$numcracks</span><span class="punct">&lt;</span><span class="constant">MAXCRACKS</span><span class="punct">)</span>
+    <span class="comment"># make a new crack instance</span>
+    <span class="constant">CRACKS</span><span class="punct">[</span><span class="global">$numcracks</span><span class="punct">]</span> <span class="punct">=</span> <span class="constant">Crack</span><span class="punct">.</span><span class="ident">new</span>
+    <span class="global">$numcracks</span> <span class="punct">+=</span> <span class="number">1</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="keyword">def </span><span class="method">beginstuff</span>
+  <span class="comment"># erase crack grid</span>
+  <span class="keyword">for</span> <span class="ident">y</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="constant">DIMY</span> <span class="keyword">do</span>
+    <span class="keyword">for</span> <span class="ident">x</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="constant">DIMX</span> <span class="keyword">do</span>
+      <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">y</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">x</span><span class="punct">]</span> <span class="punct">=</span> <span class="number">10001</span><span class="punct">;</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  <span class="comment"># make random crack seeds</span>
+  <span class="keyword">for</span> <span class="ident">k</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="number">16</span> <span class="keyword">do</span>
+    <span class="ident">i</span> <span class="punct">=</span> <span class="ident">rand</span><span class="punct">(</span><span class="constant">DIMX</span><span class="punct">*</span><span class="constant">DIMY</span><span class="punct">-</span><span class="number">1</span><span class="punct">)</span>
+    <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">i</span><span class="punct">]=</span><span class="ident">rand</span><span class="punct">(</span><span class="number">360</span><span class="punct">)</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="comment"># make just three CRACKS</span>
+  <span class="global">$numcracks</span><span class="punct">=</span><span class="number">0</span><span class="punct">;</span>
+  <span class="keyword">for</span> <span class="ident">k</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="number">3</span> <span class="keyword">do</span>
+    <span class="ident">makeCrack</span><span class="punct">()</span>
+  <span class="keyword">end</span>
+  <span class="constant">C</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">);</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># OBJECTS -------------------------------------------------------</span>
+<br />
+<span class="keyword">class </span><span class="class">Crack</span>
+<br />
+  <span class="keyword">def </span><span class="method">initialize</span>
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">Crack.new</span><span class="punct">&quot;</span>
+    <span class="comment"># find placement along existing crack</span>
+    <span class="attribute">@sp</span> <span class="punct">=</span> <span class="constant">SandPainter</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="constant">C</span><span class="punct">)</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">grains</span> <span class="punct">=</span> <span class="constant">SANDGRAINS</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">grainsize</span> <span class="punct">=</span> <span class="constant">COLORSIZE</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">huedrift</span> <span class="punct">=</span> <span class="constant">HUEDRIFT</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">color</span> <span class="punct">=</span> <span class="ident">choose</span><span class="punct">(</span><span class="constant">GOODCOLOR</span><span class="punct">)</span>
+    <span class="attribute">@verbose</span> <span class="punct">=</span> <span class="constant">true</span>
+    <span class="ident">findStart</span><span class="punct">();</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">findStart</span><span class="punct">()</span>
+<br />
+    <span class="comment"># pick random point</span>
+    <span class="ident">px</span><span class="punct">=</span><span class="number">0</span><span class="punct">;</span>
+    <span class="ident">py</span><span class="punct">=</span><span class="number">0</span><span class="punct">;</span>
+<br />
+    <span class="comment"># shift until crack is found</span>
+    <span class="ident">found</span><span class="punct">=</span><span class="constant">false</span><span class="punct">;</span>
+    <span class="ident">timeout</span> <span class="punct">=</span> <span class="number">0</span><span class="punct">;</span>
+    <span class="comment">#while ((!found) &amp;&amp; (timeout &lt; 1000))</span>
+    <span class="keyword">while</span> <span class="punct">((!</span><span class="ident">found</span><span class="punct">))</span><span class="comment"># || (timeout &gt; 1000))</span>
+      <span class="ident">px</span> <span class="punct">=</span> <span class="ident">rand</span><span class="punct">(</span><span class="constant">DIMX</span><span class="punct">)</span>
+      <span class="ident">py</span> <span class="punct">=</span> <span class="ident">rand</span><span class="punct">(</span><span class="constant">DIMY</span><span class="punct">)</span>
+      <span class="keyword">if</span> <span class="punct">(</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">py</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">px</span><span class="punct">]&lt;</span><span class="number">10000</span><span class="punct">)</span>
+        <span class="ident">found</span><span class="punct">=</span><span class="constant">true</span><span class="punct">;</span>
+        <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">found crack at <span class="expr">#{px}</span>,<span class="expr">#{py}</span> with angle <span class="expr">#{CGRID[py*DIMX+px]}</span> (<span class="expr">#{found}</span>)</span><span class="punct">&quot;</span> <span class="keyword">if</span> <span class="attribute">@verbose</span>
+      <span class="keyword">else</span>
+        <span class="comment">#puts &quot;checked #{px},#{py}&quot; if @verbose</span>
+      <span class="keyword">end</span>
+      <span class="ident">timeout</span> <span class="punct">+=</span> <span class="number">1</span>
+    <span class="keyword">end</span>
+<br />
+    <span class="keyword">if</span> <span class="punct">(</span><span class="ident">found</span><span class="punct">)</span>
+      <span class="comment"># start crack</span>
+      <span class="ident">a</span> <span class="punct">=</span> <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">py</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">px</span><span class="punct">];</span>
+      <span class="keyword">if</span> <span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">100</span><span class="punct">)&lt;</span><span class="number">50</span><span class="punct">)</span>
+        <span class="ident">a</span><span class="punct">-=</span><span class="number">90</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="number">2</span><span class="punct">,</span><span class="number">2.1</span><span class="punct">)</span><span class="comment">#.to_i;</span>
+      <span class="keyword">else</span>
+        <span class="ident">a</span><span class="punct">+=</span><span class="number">90</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="number">2</span><span class="punct">,</span><span class="number">2.1</span><span class="punct">)</span><span class="comment">#.to_i;</span>
+      <span class="keyword">end</span>
+      <span class="ident">startCrack</span><span class="punct">(</span><span class="ident">px</span><span class="punct">,</span><span class="ident">py</span><span class="punct">,</span><span class="ident">a</span><span class="punct">);</span>
+    <span class="keyword">else</span>
+      <span class="ident">println</span><span class="punct">(&quot;</span><span class="string">timeout: </span><span class="punct">&quot;+</span><span class="ident">timeout</span><span class="punct">);</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">startCrack</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span> <span class="ident">y</span><span class="punct">,</span> <span class="ident">t</span><span class="punct">)</span>
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">starting crack at <span class="expr">#{x}</span>,<span class="expr">#{y}</span> with angle <span class="expr">#{t}</span></span><span class="punct">&quot;</span> <span class="keyword">if</span> <span class="attribute">@verbose</span>
+    <span class="attribute">@x</span><span class="punct">=</span><span class="ident">x</span><span class="punct">;</span>
+    <span class="attribute">@y</span><span class="punct">=</span><span class="ident">y</span><span class="punct">;</span>
+    <span class="attribute">@t</span><span class="punct">=</span><span class="ident">t</span><span class="punct">;</span><span class="comment">#%360;</span>
+    <span class="attribute">@x</span><span class="punct">+=</span><span class="number">0.61</span><span class="punct">*</span><span class="ident">cos</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+    <span class="attribute">@y</span><span class="punct">+=</span><span class="number">0.61</span><span class="punct">*</span><span class="ident">sin</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">move</span><span class="punct">()</span>
+    <span class="comment"># continue cracking</span>
+    <span class="attribute">@x</span><span class="punct">+=</span><span class="number">0.42</span><span class="punct">*</span><span class="ident">cos</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+    <span class="attribute">@y</span><span class="punct">+=</span><span class="number">0.42</span><span class="punct">*</span><span class="ident">sin</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+<br />
+    <span class="comment"># bound check</span>
+    <span class="ident">z</span> <span class="punct">=</span> <span class="number">0.33</span><span class="punct">;</span>
+    <span class="ident">cx</span> <span class="punct">=</span> <span class="punct">(</span><span class="attribute">@x</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">)).</span><span class="ident">to_i</span><span class="punct">;</span>  <span class="comment"># add fuzz</span>
+    <span class="ident">cy</span> <span class="punct">=</span> <span class="punct">(</span><span class="attribute">@y</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">)).</span><span class="ident">to_i</span><span class="punct">;</span>
+<br />
+    <span class="comment"># draw sand painter</span>
+    <span class="ident">regionColor</span><span class="punct">();</span>
+<br />
+    <span class="comment"># draw black crack</span>
+    <span class="constant">C</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">);</span>
+    <span class="constant">C</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="attribute">@x</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">),</span><span class="attribute">@y</span><span class="punct">+</span><span class="ident">random</span><span class="punct">(-</span><span class="ident">z</span><span class="punct">,</span><span class="ident">z</span><span class="punct">),</span><span class="constant">CRACKSIZE</span><span class="punct">,</span><span class="constant">CRACKSIZE</span><span class="punct">);</span>
+<br />
+    <span class="keyword">if</span> <span class="punct">((</span><span class="ident">cx</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cx</span><span class="punct">&lt;</span><span class="constant">DIMX</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&lt;</span><span class="constant">DIMY</span><span class="punct">))</span>
+      <span class="comment"># safe to check</span>
+      <span class="keyword">if</span> <span class="punct">((</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]&gt;</span><span class="number">10000</span><span class="punct">)</span> <span class="punct">||</span> <span class="punct">(</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]-</span><span class="attribute">@t</span><span class="punct">).</span><span class="ident">abs</span><span class="punct">&lt;</span><span class="number">5</span><span class="punct">)</span>
+        <span class="comment"># continue cracking</span>
+        <span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]=</span><span class="attribute">@t</span><span class="punct">.</span><span class="ident">to_i</span>
+      <span class="keyword">elsif</span> <span class="punct">((</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]-</span><span class="attribute">@t</span><span class="punct">).</span><span class="ident">abs</span><span class="punct">&gt;</span><span class="number">2</span><span class="punct">)</span>
+        <span class="comment"># crack encountered (not self), stop cracking</span>
+        <span class="ident">findStart</span><span class="punct">();</span>
+        <span class="ident">makeCrack</span><span class="punct">();</span>
+      <span class="keyword">end</span>
+    <span class="keyword">else</span>
+      <span class="comment"># out of bounds, stop cracking</span>
+      <span class="ident">findStart</span><span class="punct">();</span>
+      <span class="ident">makeCrack</span><span class="punct">();</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<br />
+  <span class="keyword">def </span><span class="method">regionColor</span><span class="punct">()</span>
+    <span class="comment"># start checking one step away</span>
+    <span class="ident">rx</span><span class="punct">=</span><span class="attribute">@x</span><span class="punct">;</span>
+    <span class="ident">ry</span><span class="punct">=</span><span class="attribute">@y</span><span class="punct">;</span>
+    <span class="ident">openspace</span><span class="punct">=</span><span class="constant">true</span><span class="punct">;</span>
+<br />
+    <span class="comment"># find extents of open space</span>
+    <span class="keyword">while</span> <span class="punct">(</span><span class="ident">openspace</span><span class="punct">)</span>
+      <span class="comment"># move perpendicular to crack</span>
+      <span class="ident">rx</span><span class="punct">+=</span><span class="number">0.81</span><span class="punct">*</span><span class="ident">sin</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+      <span class="ident">ry</span><span class="punct">-=</span><span class="number">0.81</span><span class="punct">*</span><span class="ident">cos</span><span class="punct">(</span><span class="attribute">@t</span><span class="punct">*</span><span class="constant">PI</span><span class="punct">/</span><span class="number">180</span><span class="punct">);</span>
+      <span class="ident">cx</span> <span class="punct">=</span> <span class="ident">rx</span><span class="punct">.</span><span class="ident">to_i</span>
+      <span class="ident">cy</span> <span class="punct">=</span> <span class="ident">ry</span><span class="punct">.</span><span class="ident">to_i</span>
+      <span class="keyword">if</span> <span class="punct">((</span><span class="ident">cx</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cx</span><span class="punct">&lt;</span><span class="constant">DIMX</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&gt;=</span><span class="number">0</span><span class="punct">)</span> <span class="punct">&amp;&amp;</span> <span class="punct">(</span><span class="ident">cy</span><span class="punct">&lt;</span><span class="constant">DIMY</span><span class="punct">))</span>
+        <span class="comment"># safe to check</span>
+        <span class="keyword">if</span> <span class="punct">(</span><span class="constant">CGRID</span><span class="punct">[</span><span class="ident">cy</span><span class="punct">*</span><span class="constant">DIMX</span><span class="punct">+</span><span class="ident">cx</span><span class="punct">]&gt;</span><span class="number">10000</span><span class="punct">)</span>
+          <span class="comment"># space is open</span>
+        <span class="keyword">else</span>
+          <span class="ident">openspace</span><span class="punct">=</span><span class="constant">false</span><span class="punct">;</span>
+        <span class="keyword">end</span>
+      <span class="keyword">else</span>
+        <span class="ident">openspace</span><span class="punct">=</span><span class="constant">false</span><span class="punct">;</span>
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="comment"># draw sand painter</span>
+    <span class="attribute">@sp</span><span class="punct">.</span><span class="ident">render</span><span class="punct">(</span><span class="attribute">@x</span><span class="punct">,</span><span class="attribute">@y</span><span class="punct">,</span><span class="ident">rx</span><span class="punct">,</span><span class="ident">ry</span><span class="punct">);</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="ident">beginstuff</span>
+<br />
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">..</span><span class="constant">FRAMES</span> <span class="keyword">do</span>
+  <span class="comment"># crack all CRACKS</span>
+  <span class="keyword">for</span> <span class="ident">n</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="global">$numcracks</span> <span class="keyword">do</span>
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">frame <span class="expr">#{i}</span> moving crack <span class="expr">#{n}</span></span><span class="punct">&quot;</span>
+    <span class="constant">CRACKS</span><span class="punct">[</span><span class="ident">n</span><span class="punct">].</span><span class="ident">move</span><span class="punct">();</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="constant">C</span><span class="punct">.</span><span class="ident">save</span>
+</pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/drawing-hair">Drawing Hair</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span>
+    <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-hair.png"><img class="size-full wp-image-30 aligncenter" title="drawing-hair" src="/uploads/2008/07/drawing-hair.png" alt="" width="400" height="400" /></a></p>
+Applying the "hair" method to a Rope object will render organic flowing threads to the canvas.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># create a new 400x400 pixel canvas to draw on</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">hair.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<br />
+<span class="comment"># choose a random color and set the background to a darker variant</span>
+<span class="ident">clr</span> <span class="punct">=</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">random</span><span class="punct">.</span><span class="ident">a</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="ident">clr</span><span class="punct">.</span><span class="ident">copy</span><span class="punct">.</span><span class="ident">darken</span><span class="punct">(</span><span class="number">0.6</span><span class="punct">))</span>
+<br />
+<span class="comment"># create a new rope with 200 fibers</span>
+<span class="ident">rope</span> <span class="punct">=</span> <span class="constant">Rope</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">)</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">width</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">fibers</span> <span class="punct">=</span> <span class="number">200</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">strokewidth</span> <span class="punct">=</span> <span class="number">0.4</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">roundness</span> <span class="punct">=</span> <span class="number">3.0</span>
+<br />
+<span class="comment"># randomly rotate the canvas from its center</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span><span class="punct">/</span><span class="number">2</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">360</span><span class="punct">))</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(-</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span><span class="punct">,-</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span><span class="punct">/</span><span class="number">2</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw 50 ropes</span>
+<span class="ident">ropes</span> <span class="punct">=</span> <span class="number">50</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">..</span><span class="ident">ropes</span> <span class="keyword">do</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">stroke</span><span class="punct">(</span><span class="ident">clr</span><span class="punct">.</span><span class="ident">copy</span><span class="punct">.</span><span class="ident">analog</span><span class="punct">(</span><span class="number">20</span><span class="punct">,</span> <span class="number">0.8</span><span class="punct">))</span>   <span class="comment"># rotate hue up to 20 deg left/right, vary brightness/saturation by up to 70%</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">x0</span> <span class="punct">=</span> <span class="punct">-</span><span class="number">100</span>                            <span class="comment"># start rope off bottom left of canvas</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">y0</span> <span class="punct">=</span> <span class="punct">-</span><span class="number">100</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">x1</span> <span class="punct">=</span> <span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span> <span class="punct">+</span> <span class="number">100</span>              <span class="comment"># end rope off top right of canvas</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">y1</span> <span class="punct">=</span> <span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span> <span class="punct">+</span> <span class="number">100</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">hair</span>                                 <span class="comment"># draw rope in organic &quot;hair&quot; style</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/drawing-ribbons">Drawing Ribbons</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span>
+    <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-ribbons.png"><img class="size-full wp-image-28 aligncenter" title="drawing-ribbons" src="/uploads/2008/07/drawing-ribbons.png" alt="" width="400" height="400" /></a></p>
+Applying the "ribbon" method to a Rope object will render smooth, flowing ribbons to the canvas.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># create a new 400x400 pixel canvas to draw on</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">ribbons.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<br />
+<span class="comment"># choose a random color and set the background to a darker variant</span>
+<span class="ident">clr</span> <span class="punct">=</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">random</span><span class="punct">.</span><span class="ident">a</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="ident">clr</span><span class="punct">.</span><span class="ident">copy</span><span class="punct">.</span><span class="ident">darken</span><span class="punct">(</span><span class="number">0.6</span><span class="punct">))</span>
+<br />
+<span class="comment"># create a new rope with 200 fibers</span>
+<span class="ident">rope</span> <span class="punct">=</span> <span class="constant">Rope</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">)</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">width</span> <span class="punct">=</span> <span class="number">500</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">fibers</span> <span class="punct">=</span> <span class="number">200</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">strokewidth</span> <span class="punct">=</span> <span class="number">1.0</span>
+<span class="ident">rope</span><span class="punct">.</span><span class="ident">roundness</span> <span class="punct">=</span> <span class="number">1.5</span>
+<br />
+<span class="comment"># randomly rotate the canvas from its center</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span><span class="punct">/</span><span class="number">2</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">360</span><span class="punct">))</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(-</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span><span class="punct">,-</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span><span class="punct">/</span><span class="number">2</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw 20 ropes</span>
+<span class="ident">ropes</span> <span class="punct">=</span> <span class="number">20</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">..</span><span class="ident">ropes</span> <span class="keyword">do</span>
+    <span class="ident">canvas</span><span class="punct">.</span><span class="ident">stroke</span><span class="punct">(</span><span class="ident">clr</span><span class="punct">.</span><span class="ident">copy</span><span class="punct">.</span><span class="ident">analog</span><span class="punct">(</span><span class="number">10</span><span class="punct">,</span> <span class="number">0.7</span><span class="punct">))</span>   <span class="comment"># rotate hue up to 10 deg left/right, vary brightness/saturation by up to 70%</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">x0</span> <span class="punct">=</span> <span class="punct">-</span><span class="number">100</span>                            <span class="comment"># start rope off bottom left of canvas</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">y0</span> <span class="punct">=</span> <span class="punct">-</span><span class="number">100</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">x1</span> <span class="punct">=</span> <span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span> <span class="punct">+</span> <span class="number">200</span>              <span class="comment"># end rope off top right of canvas</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">y1</span> <span class="punct">=</span> <span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span> <span class="punct">+</span> <span class="number">200</span>
+    <span class="ident">rope</span><span class="punct">.</span><span class="ident">ribbon</span>                               <span class="comment"># draw rope in smooth &quot;ribbon&quot; style</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/image-moving-and-scaling">Image Moving and Scaling</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/images/">images</a></span>
+    <p><a href="/uploads/2008/07/image-moving.png"><img class="aligncenter size-full wp-image-26" title="image-moving" src="/uploads/2008/07/image-moving.png" alt="" width="400" height="400" /></a>
+<br />
+Various scaling and moving operations are available for images.  You can scale an image proportionally by a percentage, scale it to fit proportionally within a bounding box, or scale width and height to fit exactly within a bounding box.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">moving.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span> <span class="punct">'</span><span class="string">Skia</span><span class="punct">'</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span> <span class="number">14</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">stroke</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">red</span>
+<br />
+<span class="comment"># load an image</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span> <span class="punct">'</span><span class="string">v2.jpg</span><span class="punct">'</span>
+<br />
+<span class="comment"># SCALE (multiply both dimensions by a scaling factor)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">scale</span><span class="punct">(</span><span class="number">0.2</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">240</span><span class="punct">)</span>  <span class="comment"># draw the image at the specified coordinates</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">scale to 20%</span><span class="punct">&quot;,</span><span class="number">0</span><span class="punct">,</span><span class="number">220</span><span class="punct">)</span>
+<br />
+<span class="comment"># FIT (scale to fit within the given dimensions, maintaining original aspect ratio)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span>               <span class="comment"># first reset the image to its original size</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">120</span><span class="punct">,</span><span class="number">240</span><span class="punct">,</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="number">133</span><span class="punct">,</span><span class="number">240</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">fit into 100x100</span><span class="punct">&quot;,</span><span class="number">120</span><span class="punct">,</span><span class="number">220</span><span class="punct">)</span>
+<br />
+<span class="comment"># RESIZE (scale to fit exactly within the given dimensions)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">resize</span><span class="punct">(</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="number">240</span><span class="punct">,</span><span class="number">240</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">resize to 100x100</span><span class="punct">&quot;,</span><span class="number">240</span><span class="punct">,</span><span class="number">220</span><span class="punct">)</span>
+<br />
+<span class="comment"># CROP (to the largest square containing image data)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">scale</span><span class="punct">(</span><span class="number">0.2</span><span class="punct">).</span><span class="ident">crop</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">crop max square</span><span class="punct">&quot;,</span><span class="number">0</span><span class="punct">,</span><span class="number">80</span><span class="punct">)</span>
+<br />
+<span class="comment"># CROP (within a rectangle starting at x,y with width,height)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">scale</span><span class="punct">(</span><span class="number">0.3</span><span class="punct">).</span><span class="ident">crop</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="number">120</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">crop to 100x100</span><span class="punct">&quot;,</span><span class="number">120</span><span class="punct">,</span><span class="number">80</span><span class="punct">)</span>
+<br />
+<span class="comment"># ROTATE</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">origin</span><span class="punct">(</span><span class="symbol">:center</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="number">45</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="number">300</span><span class="punct">,</span><span class="number">140</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">rotate 45 degrees</span><span class="punct">&quot;,</span><span class="number">250</span><span class="punct">,</span><span class="number">50</span><span class="punct">)</span>
+<br />
+<span class="comment">#img.origin(:center)   # center the image</span>
+<span class="comment">#img.translate(0,-150)    # move the image</span>
+<br />
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/image-effects">Image Effects</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/images/">images</a></span>
+    <p><a href="/uploads/2008/07/image-effects.png"><img class="aligncenter size-full wp-image-24" title="image-effects" src="/uploads/2008/07/image-effects.png" alt="" width="400" height="400" /></a>
+<br />
+You can apply various Photoshop-style filters to images, then render them to the canvas.
+<br />
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">effects.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">14</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># load image file</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">')</span>
+<br />
+<span class="comment"># set image width/height, starting position, and increment position</span>
+<span class="ident">w</span><span class="punct">,</span><span class="ident">h</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">]</span>
+<span class="ident">x</span><span class="punct">,</span><span class="ident">y</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">0</span><span class="punct">,</span><span class="number">290</span><span class="punct">]</span>
+<span class="ident">xoffset</span> <span class="punct">=</span> <span class="number">105</span>
+<span class="ident">yoffset</span> <span class="punct">=</span> <span class="number">130</span>
+<br />
+<span class="comment"># ORIGINAL image, resized to fit within w,h:</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">original</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># CRYSTALLIZE: apply a &quot;crystallize&quot; effect with the given radius</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">crystallize</span><span class="punct">(</span><span class="number">5.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">crystallize</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># BLOOM: apply a &quot;bloom&quot; effect with the given radius and intensity</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">bloom</span><span class="punct">(</span><span class="number">10</span><span class="punct">,</span> <span class="number">1.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">bloom</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># EDGES: detect edges</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">edges</span><span class="punct">(</span><span class="number">10</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">edges</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># (go to next row)</span>
+<span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
+<span class="ident">y</span> <span class="punct">-=</span> <span class="ident">yoffset</span>
+<br />
+<span class="comment"># POSTERIZE: reduce image to the specified number of colors</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">posterize</span><span class="punct">(</span><span class="number">8</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">posterize</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># TWIRL: rotate around x,y with radius and angle</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">twirl</span><span class="punct">(</span><span class="number">35</span><span class="punct">,</span><span class="number">50</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">90</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">twirl</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># EDGEWORK: simulate a woodcut print</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">width</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">height</span><span class="punct">)</span> <span class="comment"># needs a black background</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">edgework</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">edgework</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># DISPLACEMENT: use a second image as a displacement map</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img2</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">').</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">img</span><span class="punct">.</span><span class="ident">width</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">height</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">displacement</span><span class="punct">(</span><span class="ident">img2</span><span class="punct">,</span> <span class="number">30.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">displacement</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># (go to next row)</span>
+<span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
+<span class="ident">y</span> <span class="punct">-=</span> <span class="ident">yoffset</span>
+<br />
+<span class="comment"># DOTSCREEN: simulate a dot screen: center point, angle(0-360), width(1-50), and sharpness(0-1)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">dotscreen</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">45</span><span class="punct">,</span><span class="number">5</span><span class="punct">,</span><span class="number">0.7</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">dotscreen</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># SHARPEN: sharpen using the given radius and intensity</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">sharpen</span><span class="punct">(</span><span class="number">2.0</span><span class="punct">,</span><span class="number">2.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">sharpen</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># BLUR: apply a gaussian blur with the given radius</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">blur</span><span class="punct">(</span><span class="number">3.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">blur</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># MOTION BLUR: apply a motion blur with the given radius and angle</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">motionblur</span><span class="punct">(</span><span class="number">10.0</span><span class="punct">,</span><span class="number">90</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">motion blur</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/image-color-adjustments">Image Color Adjustments</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/color/">color</a>, <a href="/tag/images/">images</a></span>
+    <p><a style="text-decoration: none;" href="/uploads/2008/07/image-colors.png"><span style="color: #000000;">
+</span><img class="aligncenter size-full wp-image-21" style="text-decoration: underline;" title="image-colors" src="/uploads/2008/07/image-colors.png" alt="" width="400" height="400" /></a>
+<br />
+You can apply various color adjustments to a loaded image, then render it to the canvas. Â You can also grab colors from an image for use in a gradient or to paint objects on the canvas.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">colors.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">14</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># LOAD IMAGE</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">')</span>
+<br />
+<span class="ident">w</span><span class="punct">,</span><span class="ident">h</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">]</span>
+<span class="ident">x</span><span class="punct">,</span><span class="ident">y</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">0</span><span class="punct">,</span><span class="number">290</span><span class="punct">]</span>
+<span class="ident">xoffset</span> <span class="punct">=</span> <span class="number">105</span>
+<span class="ident">yoffset</span> <span class="punct">=</span> <span class="number">130</span>
+<br />
+<span class="comment"># ORIGINAL image, resized to fit within w,h:</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">original</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># HUE: rotate color wheel by degrees</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">hue</span><span class="punct">(</span><span class="number">45</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">hue</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># EXPOSURE: increase/decrease exposure by f-stops</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">exposure</span><span class="punct">(</span><span class="number">1.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">exposure</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># SATURATION: adjust saturation by multiplier</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">saturation</span><span class="punct">(</span><span class="number">2.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">saturation</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># (go to next row)</span>
+<span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
+<span class="ident">y</span> <span class="punct">-=</span> <span class="ident">yoffset</span>
+<br />
+<span class="comment"># CONTRAST: adjust contrast by multiplier</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">contrast</span><span class="punct">(</span><span class="number">2.0</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">contrast</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># BRIGHTNESS: adjust brightness</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">brightness</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">brightness</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># MONOCHROME: convert to a monochrome image</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">monochrome</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">orange</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">monochrome</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># WHITEPOINT: remap the white point</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">whitepoint</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">whiteish</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">white point</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># (go to next row)</span>
+<span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
+<span class="ident">y</span> <span class="punct">-=</span> <span class="ident">yoffset</span>
+<br />
+<span class="comment"># CHAINING: apply multiple effects at once</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">hue</span><span class="punct">(</span><span class="number">60</span><span class="punct">).</span><span class="ident">saturation</span><span class="punct">(</span><span class="number">2.0</span><span class="punct">).</span><span class="ident">contrast</span><span class="punct">(</span><span class="number">2.5</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">multi effects</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="comment"># COLORS: sample random colors from the image and render as a gradient</span>
+<span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>              <span class="comment"># reset the image and scale to fit within w,h</span>
+<span class="ident">colors</span> <span class="punct">=</span> <span class="ident">img</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">10</span><span class="punct">).</span><span class="ident">sort!</span>   <span class="comment"># select 10 random colors and sort by brightness</span>
+<span class="ident">gradient</span> <span class="punct">=</span> <span class="constant">Gradient</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">colors</span><span class="punct">)</span> <span class="comment"># create a new gradient using the selected colors</span>
+<span class="ident">rect</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">width</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">height</span><span class="punct">)</span> <span class="comment"># create a rectangle the size of the image</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">beginclip</span><span class="punct">(</span><span class="ident">rect</span><span class="punct">)</span>          <span class="comment"># begin clipping so the gradient will only fill the rectangle</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">gradient</span><span class="punct">(</span><span class="ident">gradient</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">,</span><span class="ident">x</span><span class="punct">+</span><span class="ident">img</span><span class="punct">.</span><span class="ident">width</span><span class="punct">,</span><span class="ident">y</span><span class="punct">+</span><span class="ident">img</span><span class="punct">.</span><span class="ident">height</span><span class="punct">)</span> <span class="comment"># draw the gradient between opposite corners of the rectangle</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">endclip</span>                  <span class="comment"># end clipping so we can draw on the rest of the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">get colors</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>    <span class="comment"># add text label</span>
+<span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
+<br />
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span>
+</pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/07/02/image-blend-modes">Image Blend Modes</a></h3>
+    <span class='entry-meta'>July 2, 2008 | <a href="/tag/images/">images</a></span>
+    <p><a href="/uploads/2008/07/image-blendmodes.png"><img class="aligncenter size-full wp-image-20" title="image-blendmodes" src="/uploads/2008/07/image-blendmodes.png" alt="" width="400" height="730" /></a>
+<br />
+You can use various Photoshop-style blend modes to composite two or more images by applying the "blend" method to an Image object.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">blend.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">730</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">14</span><span class="punct">)</span>
+<br />
+<span class="comment"># set image width,height</span>
+<span class="ident">w</span><span class="punct">,</span><span class="ident">h</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">95</span><span class="punct">,</span><span class="number">95</span><span class="punct">]</span>
+<br />
+<span class="comment"># set initial drawing position</span>
+<span class="ident">x</span><span class="punct">,</span><span class="ident">y</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">0</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span> <span class="punct">-</span> <span class="ident">h</span> <span class="punct">-</span> <span class="number">10</span><span class="punct">]</span>
+<br />
+<span class="comment"># load and resize two images</span>
+<span class="ident">imgA</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">').</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<span class="ident">imgB</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">').</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+<br />
+<span class="comment"># add image B to image A using each blending mode, and draw to canvas</span>
+<span class="keyword">for</span> <span class="ident">blendmode</span> <span class="keyword">in</span> <span class="punct">[</span><span class="symbol">:normal</span><span class="punct">,</span><span class="symbol">:multiply</span><span class="punct">,</span><span class="symbol">:screen</span><span class="punct">,</span><span class="symbol">:overlay</span><span class="punct">,</span><span class="symbol">:darken</span><span class="punct">,</span><span class="symbol">:lighten</span><span class="punct">,</span>
+  <span class="symbol">:colordodge</span><span class="punct">,</span><span class="symbol">:colorburn</span><span class="punct">,</span><span class="symbol">:softlight</span><span class="punct">,</span><span class="symbol">:hardlight</span><span class="punct">,</span><span class="symbol">:difference</span><span class="punct">,</span><span class="symbol">:exclusion</span><span class="punct">,</span>
+  <span class="symbol">:hue</span><span class="punct">,</span><span class="symbol">:saturation</span><span class="punct">,</span><span class="symbol">:color</span><span class="punct">,</span><span class="symbol">:luminosity</span><span class="punct">,</span><span class="symbol">:maximum</span><span class="punct">,</span><span class="symbol">:minimum</span><span class="punct">,</span><span class="symbol">:add</span><span class="punct">,</span><span class="symbol">:atop</span><span class="punct">,</span>
+  <span class="symbol">:in</span><span class="punct">,</span><span class="symbol">:out</span><span class="punct">,</span><span class="symbol">:over</span><span class="punct">]</span> <span class="keyword">do</span>
+  <span class="ident">imgA</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
+  <span class="ident">imgA</span><span class="punct">.</span><span class="ident">blend</span><span class="punct">(</span><span class="ident">imgB</span><span class="punct">,</span> <span class="ident">blendmode</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">imgA</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(</span><span class="ident">blendmode</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
+  <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">w</span> <span class="punct">+</span> <span class="number">5</span>
+  <span class="keyword">if</span> <span class="punct">(</span><span class="ident">x</span> <span class="punct">&gt;</span> <span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span> <span class="punct">-</span> <span class="ident">w</span> <span class="punct">+</span> <span class="number">5</span><span class="punct">)</span>
+    <span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
+    <span class="ident">y</span> <span class="punct">-=</span> <span class="ident">h</span> <span class="punct">+</span> <span class="number">25</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/06/30/gradients">Gradients</a></h3>
+    <span class='entry-meta'>June 30, 2008 | <a href="/tag/color/">color</a></span>
+    <p><p style="text-align: center;"><a href="/uploads/2008/06/color-gradients.png"><img class="size-full wp-image-13" title="color-gradients" src="/uploads/2008/06/color-gradients.png" alt="" width="400" height="400" /></a></p>
+Radial or linear gradients may be drawn by first specifying their main constituent colors, then applying to the canvas with a start and endpoint.  (warning: crashes in MacRuby 0.4)
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># FIXME: SEGFAULT!!</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">gradients.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a new gradient</span>
+<span class="ident">gradient</span> <span class="punct">=</span> <span class="constant">Gradient</span><span class="punct">.</span><span class="ident">new</span>
+<br />
+<span class="comment"># set the component colors of the gradient</span>
+<span class="ident">gradient</span><span class="punct">.</span><span class="ident">set</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">,</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">,</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">red</span><span class="punct">.</span><span class="ident">darken</span><span class="punct">,</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">orange</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw a linear gradient starting at 50,50 and ending at 200,200</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">gradient</span><span class="punct">(</span><span class="ident">gradient</span><span class="punct">,</span> <span class="number">50</span><span class="punct">,</span><span class="number">50</span><span class="punct">,</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
+<br />
+<span class="comment"># do not extend gradient beyond its start/endpoints</span>
+<span class="ident">gradient</span><span class="punct">.</span><span class="ident">pre</span><span class="punct">(</span><span class="constant">false</span><span class="punct">)</span>
+<span class="ident">gradient</span><span class="punct">.</span><span class="ident">post</span><span class="punct">(</span><span class="constant">false</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw a radial gradient starting at 200,200 with radius 100</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">radial</span><span class="punct">(</span><span class="ident">gradient</span><span class="punct">,</span> <span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/06/30/color-parsing">Color Parsing</a></h3>
+    <span class='entry-meta'>June 30, 2008 | <a href="/tag/color/">color</a>, <a href="/tag/images/">images</a></span>
+    <p><p style="text-align: center;"><img class="size-full wp-image-16" title="color-parsing" src="/uploads/2008/07/color-parsing.png" alt="" width="400" height="400" /></p>
+<p style="text-align: left;">You can load an image, grab an array of colors from it, and then apply those colors to other objects on the canvas.</p>
+<br />
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">parsing.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">shadow</span>
+<br />
+<span class="comment"># load an image and select 100 random colors</span>
+<span class="ident">image</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">')</span>
+<span class="ident">randomcolors</span> <span class="punct">=</span> <span class="ident">image</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">100</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a 20x20 square at 0,0</span>
+<span class="ident">square</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+<br />
+<span class="comment"># randomize the color, scale, and rotation of the square</span>
+<span class="ident">square</span><span class="punct">.</span><span class="ident">randomize</span><span class="punct">(</span><span class="symbol">:fill</span><span class="punct">,</span> <span class="ident">randomcolors</span><span class="punct">)</span>
+<span class="ident">square</span><span class="punct">.</span><span class="ident">randomize</span><span class="punct">(</span><span class="symbol">:scale</span><span class="punct">,</span> <span class="number">1.0</span><span class="punct">..</span><span class="number">5.0</span><span class="punct">)</span>
+<span class="ident">square</span><span class="punct">.</span><span class="ident">randomize</span><span class="punct">(</span><span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">0</span><span class="punct">..</span><span class="number">360</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw 100 squares and the original image</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">grid</span><span class="punct">(</span><span class="ident">square</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="number">10</span><span class="punct">)</span>
+<span class="ident">image</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="number">120</span><span class="punct">,</span><span class="number">120</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">image</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+  </div>
+
+  <div class='post'>
+    <h3 class='entry-title'><a href="/2008/06/29/color-rules">Color Rules</a></h3>
+    <span class='entry-meta'>June 29, 2008 | <a href="/tag/color/">color</a></span>
+    <p><p style="text-align: center;"><span style="color: #0000ee; text-decoration: underline;"><a href="/uploads/2008/06/color-rules.png"></a><a href="/uploads/2008/07/color-harmony.png"><img class="aligncenter size-full wp-image-18" title="color-harmony" src="/uploads/2008/07/color-harmony.png" alt="" width="400" height="400" /></a>
+</span></p>
+<p style="text-align: left;">Various sets of colors can be generated from a single starting color by using the various classical color harmony schemes.Â  For more information, see <a href="http://en.wikipedia.org/wiki/Color_theory" target="_blank">Color Theory</a> on Wikipedia.</p>
+<br />
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># set up the canvas and font</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">harmony.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">12</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a new color with the specified red, green, blue, and alpha values</span>
+<span class="ident">blue</span> <span class="punct">=</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="number">0.0</span><span class="punct">,</span><span class="number">0.4</span><span class="punct">,</span><span class="number">0.6</span><span class="punct">,</span><span class="number">1.0</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw the original color</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">135</span><span class="punct">,</span><span class="number">350</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">original color</span><span class="punct">&quot;,-</span><span class="number">115</span><span class="punct">,</span><span class="number">10</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="ident">blue</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">255</span><span class="punct">,</span><span class="number">30</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a rectangle to use as a color swatch</span>
+<span class="ident">swatch</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">15</span><span class="punct">,</span><span class="number">30</span><span class="punct">)</span>
+<span class="ident">swatch</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:x</span><span class="punct">,</span> <span class="number">15</span><span class="punct">)</span>
+<br />
+<span class="comment"># draw harmony schemes derived from this color</span>
+<span class="keyword">for</span> <span class="ident">scheme</span> <span class="keyword">in</span> <span class="punct">[</span>
+  <span class="symbol">:complementary</span><span class="punct">,</span><span class="symbol">:split_complementary</span><span class="punct">,</span><span class="symbol">:left_complement</span><span class="punct">,</span>
+  <span class="symbol">:right_complement</span><span class="punct">,</span><span class="symbol">:monochrome</span><span class="punct">,</span><span class="symbol">:triad</span><span class="punct">,</span><span class="symbol">:tetrad</span><span class="punct">,</span><span class="symbol">:compound</span><span class="punct">,</span>
+  <span class="symbol">:flipped_compound</span>
+  <span class="punct">]</span> <span class="keyword">do</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">0</span><span class="punct">,-</span><span class="number">38</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(</span><span class="ident">scheme</span><span class="punct">,-</span><span class="number">115</span><span class="punct">,</span><span class="number">10</span><span class="punct">)</span>
+  <span class="ident">swatch</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:fill</span><span class="punct">,</span> <span class="ident">blue</span><span class="punct">.</span><span class="ident">send</span><span class="punct">(</span><span class="ident">scheme</span><span class="punct">).</span><span class="ident">sort</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">swatch</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">17</span><span class="punct">)</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># save the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span>
+</pre>
+</p>
+  </div>
+
+
+<!-- Pagination links -->
+<div class="pagination">
+  
+
+  
+</div>
+
+  </div>
+
+  <!-- Right Column -->
+  <div id="sidebar">
+    <ul>
+      <!-- Recent Posts -->
+      <li class="pagenav">
+        <h2>Recent</h2>
+        <ul>
+          
+          <li class="page-item"><a href="/2011/04/27/standalone-library">Standalone Library</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/text-spirograph">Text Spirograph</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/iterating-paths">Iterating Paths</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></li>
+          
+        </ul>
+      </li>
+
+      <!-- Links -->
+      <li class="pagenav">
+        <h2>Links</h2>
+        <ul>
+          <li class="page-item"><a href="http://github.com/drtoast/macruby_graphics">download library</a></li>
+          <li class="page-item"><a href="http://github.com/drtoast">github.com/drtoast</a></li>
+          <li class="page-item"><a href="http://twitter.com/drtoast">twitter.com/drtoast</a></li>
+          <li class="page-item"><a href="http://drtoast.com">drtoast.com</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <hr />
+  <div id="footer">
+    <p class='entry-meta'>Copyright &copy; 2008-2012 <a href="http://github.com/drtoast">James Reynolds</a></p>
+  </div>
+
+</div>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-546935-4");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics end -->
+
+</body>
+</html>

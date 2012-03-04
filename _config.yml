@@ -1,0 +1,10 @@
+pygments:    false
+markdown:    maruku
+permalink:   /:year/:month/:day/:title.html
+multiviews:  true
+paginate:    20
+
+# plugins
+category_dir: tag
+category_title_prefix: ''
+

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>Randomizing Paths</title>
+   <meta name="author" content="James Reynolds" />
+    <!--<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />-->
+    <link rel="stylesheet" href="/css/wordpress.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+
+<div id="page">
+
+  <!-- header -->
+  <div id="header">
+    <div id="headerimg" onclick="location.href='http://hcg.drtoast.com';" style="cursor:pointer;">
+      <h1><a href="http://hcg.drtoast.com/"></a></h1>
+      <div class="description"></div>
+    </div>
+  </div>
+  <hr />
+
+  <!-- main content -->
+  <div id="content" class="narrowcolumn">
+    <div id="post">
+  <h3 class='entry-title'>Randomizing Paths</h3>
+  <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span><br />
+
+  <p><p style="text-align: center;"><a href="/uploads/2008/06/paths-randomizing1.png"><img class="size-full wp-image-9" title="paths-randomizing1" src="/uploads/2008/06/paths-randomizing1.png" alt="" width="400" height="400" /></a></p>
+By applying the "randomize" method to a Path object, you can specify attributes that should be randomized each time the object is drawn to the canvas.
+<br />
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># create a new 400x400 pixel canvas to draw on</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">randomizing.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
+<br />
+<span class="comment"># create a flower shape</span>
+<span class="ident">shape</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span>
+<span class="ident">petals</span> <span class="punct">=</span> <span class="number">5</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">1</span><span class="punct">..</span><span class="ident">petals</span> <span class="keyword">do</span>
+  <span class="ident">shape</span><span class="punct">.</span><span class="ident">petal</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>       <span class="comment"># petal at x,y with width,height</span>
+  <span class="ident">shape</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="number">360</span> <span class="punct">/</span> <span class="ident">petals</span><span class="punct">)</span>    <span class="comment"># rotate by 1/5th</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># randomize shape parameters</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:fill</span><span class="punct">,</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">.</span><span class="ident">complementary</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:stroke</span><span class="punct">,</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">.</span><span class="ident">complementary</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:strokewidth</span><span class="punct">,</span> <span class="number">1.0</span><span class="punct">..</span><span class="number">10.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">0</span><span class="punct">..</span><span class="number">360</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scale</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scalex</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scaley</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:alpha</span><span class="punct">,</span> <span class="number">0.5</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="comment"># shape.randomize :hue, 0.5..0.8</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:saturation</span><span class="punct">,</span> <span class="number">0.0</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:brightness</span><span class="punct">,</span> <span class="number">0.0</span><span class="punct">..</span><span class="number">1.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:x</span><span class="punct">,</span> <span class="punct">-</span><span class="number">100.0</span><span class="punct">..</span><span class="number">100.0</span>
+<span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:y</span><span class="punct">,</span> <span class="punct">-</span><span class="number">100.0</span><span class="punct">..</span><span class="number">100.0</span>
+<br />
+<span class="comment"># draw 50 flowers starting at the center of the canvas</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">shape</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+</div>
+
+
+
+  </div>
+
+  <!-- Right Column -->
+  <div id="sidebar">
+    <ul>
+      <!-- Recent Posts -->
+      <li class="pagenav">
+        <h2>Recent</h2>
+        <ul>
+          
+          <li class="page-item"><a href="/2011/04/27/standalone-library">Standalone Library</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/text-spirograph">Text Spirograph</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/iterating-paths">Iterating Paths</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></li>
+          
+        </ul>
+      </li>
+
+      <!-- Links -->
+      <li class="pagenav">
+        <h2>Links</h2>
+        <ul>
+          <li class="page-item"><a href="http://github.com/drtoast/macruby_graphics">download library</a></li>
+          <li class="page-item"><a href="http://github.com/drtoast">github.com/drtoast</a></li>
+          <li class="page-item"><a href="http://twitter.com/drtoast">twitter.com/drtoast</a></li>
+          <li class="page-item"><a href="http://drtoast.com">drtoast.com</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <hr />
+  <div id="footer">
+    <p class='entry-meta'>Copyright &copy; 2008-2012 <a href="http://github.com/drtoast">James Reynolds</a></p>
+  </div>
+
+</div>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-546935-4");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics end -->
+
+</body>
+</html>

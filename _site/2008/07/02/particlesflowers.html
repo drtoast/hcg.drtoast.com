@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>Particles/Flowers</title>
+   <meta name="author" content="James Reynolds" />
+    <!--<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />-->
+    <link rel="stylesheet" href="/css/wordpress.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+
+<div id="page">
+
+  <!-- header -->
+  <div id="header">
+    <div id="headerimg" onclick="location.href='http://hcg.drtoast.com';" style="cursor:pointer;">
+      <h1><a href="http://hcg.drtoast.com/"></a></h1>
+      <div class="description"></div>
+    </div>
+  </div>
+  <hr />
+
+  <!-- main content -->
+  <div id="content" class="narrowcolumn">
+    <div id="post">
+  <h3 class='entry-title'>Particles/Flowers</h3>
+  <span class='entry-meta'>July 2, 2008 | <a href="/tag/drawing/">drawing</a></span><br />
+
+  <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-particles1.png"><img class="size-full wp-image-36 aligncenter" title="drawing-particles1" src="/uploads/2008/07/drawing-particles1.png" alt="" width="400" height="400" /></a></p>
+<br />
+This example uses a system of particles that travel upwards from the bottom of the canvas. Â The paths taken by the particles are rendered as stems, and a "flower" is drawn at each endpoint.
+<pre><span class="comment">#!/usr/local/bin/macruby</span>
+<br />
+<span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
+<span class="ident">include</span> <span class="constant">HotCocoa</span>
+<span class="ident">include</span> <span class="constant">Graphics</span>
+<br />
+<span class="comment"># initialize canvas</span>
+<span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">particles.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
+<br />
+<span class="comment"># load images and grab colors</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">').</span><span class="ident">saturation</span><span class="punct">(</span><span class="number">1.9</span><span class="punct">)</span>
+<span class="ident">redcolors</span> <span class="punct">=</span> <span class="ident">img</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">100</span><span class="punct">)</span>
+<span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">').</span><span class="ident">saturation</span><span class="punct">(</span><span class="number">1.9</span><span class="punct">)</span>
+<span class="ident">bluecolors</span> <span class="punct">=</span> <span class="ident">img</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">100</span><span class="punct">)</span>
+<br />
+<span class="comment"># create flower head shape</span>
+<span class="ident">head</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+<span class="ident">petals</span> <span class="punct">=</span> <span class="number">3</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">1</span><span class="punct">..</span><span class="ident">petals</span> <span class="keyword">do</span>
+  <span class="ident">head</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="number">360</span><span class="punct">/</span><span class="ident">petals</span><span class="punct">)</span>
+  <span class="ident">head</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="number">5</span><span class="punct">,</span><span class="number">5</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+  <span class="ident">head</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">17</span><span class="punct">,</span><span class="number">2</span><span class="punct">,</span><span class="number">2</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
+<span class="keyword">end</span>
+<span class="comment"># randomize head attributes</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:fill</span><span class="punct">,</span> <span class="ident">redcolors</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:stroke</span><span class="punct">,</span> <span class="ident">bluecolors</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:scale</span><span class="punct">,</span> <span class="number">0.2</span><span class="punct">..</span><span class="number">2.0</span>
+<span class="ident">head</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">0</span><span class="punct">..</span><span class="number">360</span>
+<br />
+<span class="comment"># create particles</span>
+<span class="ident">total_particles</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="ident">total_iterations</span> <span class="punct">=</span> <span class="number">100</span>
+<span class="ident">particles</span> <span class="punct">=</span> <span class="punct">[]</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_particles</span> <span class="keyword">do</span>
+  <span class="comment"># start particle at random point at bottom of canvas</span>
+  <span class="ident">x</span> <span class="punct">=</span> <span class="ident">random</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span> <span class="punct">-</span> <span class="number">50</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span> <span class="punct">+</span> <span class="number">50</span><span class="punct">)</span>
+  <span class="ident">p</span> <span class="punct">=</span> <span class="constant">Particle</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span><span class="number">0</span><span class="punct">)</span>
+  <span class="ident">p</span><span class="punct">.</span><span class="ident">velocity_x</span> <span class="punct">=</span> <span class="ident">random</span><span class="punct">(-</span><span class="number">0.5</span><span class="punct">,</span><span class="number">0.5</span><span class="punct">)</span>   <span class="comment"># set initial x velocity</span>
+  <span class="ident">p</span><span class="punct">.</span><span class="ident">velocity_y</span> <span class="punct">=</span> <span class="ident">random</span><span class="punct">(</span><span class="number">1.0</span><span class="punct">,</span><span class="number">3.0</span><span class="punct">)</span>    <span class="comment"># set initial y velocity</span>
+  <span class="ident">p</span><span class="punct">.</span><span class="ident">acceleration</span> <span class="punct">=</span> <span class="number">0.1</span>            <span class="comment"># set drag or acceleration</span>
+  <span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">]</span> <span class="punct">=</span> <span class="ident">p</span>          <span class="comment"># add particle to array</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># animate particles</span>
+<span class="keyword">for</span> <span class="ident">frame</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_iterations</span> <span class="keyword">do</span>
+  <span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_particles</span> <span class="keyword">do</span>
+    <span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">move</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<br />
+<span class="comment"># draw particle trails and heads</span>
+<span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">...</span><span class="ident">total_particles</span> <span class="keyword">do</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">push</span>
+  <span class="comment"># choose a stem color</span>
+  <span class="ident">color</span> <span class="punct">=</span> <span class="ident">choose</span><span class="punct">(</span><span class="ident">bluecolors</span><span class="punct">).</span><span class="ident">a</span><span class="punct">(</span><span class="number">0.7</span><span class="punct">).</span><span class="ident">analog</span><span class="punct">(</span><span class="number">20</span><span class="punct">,</span><span class="number">0.7</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">stroke</span><span class="punct">(</span><span class="ident">color</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">strokewidth</span><span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">,</span><span class="number">2.0</span><span class="punct">))</span>
+  <span class="comment"># draw the particle</span>
+  <span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">)</span>
+  <span class="comment"># go to the last particle position and draw the flower head</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">points</span><span class="punct">[-</span><span class="number">1</span><span class="punct">][</span><span class="number">0</span><span class="punct">],</span><span class="ident">particles</span><span class="punct">[</span><span class="ident">i</span><span class="punct">].</span><span class="ident">points</span><span class="punct">[-</span><span class="number">1</span><span class="punct">][</span><span class="number">1</span><span class="punct">])</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">head</span><span class="punct">)</span>
+  <span class="ident">canvas</span><span class="punct">.</span><span class="ident">pop</span>
+<span class="keyword">end</span>
+<br />
+<span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
+</p>
+</div>
+
+
+
+  </div>
+
+  <!-- Right Column -->
+  <div id="sidebar">
+    <ul>
+      <!-- Recent Posts -->
+      <li class="pagenav">
+        <h2>Recent</h2>
+        <ul>
+          
+          <li class="page-item"><a href="/2011/04/27/standalone-library">Standalone Library</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/text-spirograph">Text Spirograph</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/iterating-paths">Iterating Paths</a></li>
+          
+          <li class="page-item"><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></li>
+          
+        </ul>
+      </li>
+
+      <!-- Links -->
+      <li class="pagenav">
+        <h2>Links</h2>
+        <ul>
+          <li class="page-item"><a href="http://github.com/drtoast/macruby_graphics">download library</a></li>
+          <li class="page-item"><a href="http://github.com/drtoast">github.com/drtoast</a></li>
+          <li class="page-item"><a href="http://twitter.com/drtoast">twitter.com/drtoast</a></li>
+          <li class="page-item"><a href="http://drtoast.com">drtoast.com</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <hr />
+  <div id="footer">
+    <p class='entry-meta'>Copyright &copy; 2008-2012 <a href="http://github.com/drtoast">James Reynolds</a></p>
+  </div>
+
+</div>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-546935-4");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics end -->
+
+</body>
+</html>

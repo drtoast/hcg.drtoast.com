@@ -28,32 +28,32 @@
 
   <p><p style="text-align: center;"><img class="size-full wp-image-16" title="color-parsing" src="/uploads/2008/07/color-parsing.png" alt="" width="400" height="400" /></p>
 <p style="text-align: left;">You can load an image, grab an array of colors from it, and then apply those colors to other objects on the canvas.</p>
-<br />
+
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># set up the canvas and font</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">parsing.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">shadow</span>
-<br />
+
 <span class="comment"># load an image and select 100 random colors</span>
 <span class="ident">image</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">')</span>
 <span class="ident">randomcolors</span> <span class="punct">=</span> <span class="ident">image</span><span class="punct">.</span><span class="ident">colors</span><span class="punct">(</span><span class="number">100</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># create a 20x20 square at 0,0</span>
 <span class="ident">square</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="symbol">:center</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># randomize the color, scale, and rotation of the square</span>
 <span class="ident">square</span><span class="punct">.</span><span class="ident">randomize</span><span class="punct">(</span><span class="symbol">:fill</span><span class="punct">,</span> <span class="ident">randomcolors</span><span class="punct">)</span>
 <span class="ident">square</span><span class="punct">.</span><span class="ident">randomize</span><span class="punct">(</span><span class="symbol">:scale</span><span class="punct">,</span> <span class="number">1.0</span><span class="punct">..</span><span class="number">5.0</span><span class="punct">)</span>
 <span class="ident">square</span><span class="punct">.</span><span class="ident">randomize</span><span class="punct">(</span><span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">0</span><span class="punct">..</span><span class="number">360</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># draw 100 squares and the original image</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">grid</span><span class="punct">(</span><span class="ident">square</span><span class="punct">,</span><span class="number">10</span><span class="punct">,</span><span class="number">10</span><span class="punct">)</span>
 <span class="ident">image</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="number">120</span><span class="punct">,</span><span class="number">120</span><span class="punct">)</span>

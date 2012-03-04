@@ -28,19 +28,19 @@
 
   <p><p style="text-align: center;"><a href="/uploads/2008/06/paths-randomizing1.png"><img class="size-full wp-image-9" title="paths-randomizing1" src="/uploads/2008/06/paths-randomizing1.png" alt="" width="400" height="400" /></a></p>
 By applying the "randomize" method to a Path object, you can specify attributes that should be randomized each time the object is drawn to the canvas.
-<br />
+
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># create a new 400x400 pixel canvas to draw on</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">randomizing.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># create a flower shape</span>
 <span class="ident">shape</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span>
 <span class="ident">petals</span> <span class="punct">=</span> <span class="number">5</span>
@@ -48,7 +48,7 @@ By applying the "randomize" method to a Path object, you can specify attributes 
   <span class="ident">shape</span><span class="punct">.</span><span class="ident">petal</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>       <span class="comment"># petal at x,y with width,height</span>
   <span class="ident">shape</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="number">360</span> <span class="punct">/</span> <span class="ident">petals</span><span class="punct">)</span>    <span class="comment"># rotate by 1/5th</span>
 <span class="keyword">end</span>
-<br />
+
 <span class="comment"># randomize shape parameters</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:fill</span><span class="punct">,</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">.</span><span class="ident">complementary</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:stroke</span><span class="punct">,</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">.</span><span class="ident">complementary</span>
@@ -63,7 +63,7 @@ By applying the "randomize" method to a Path object, you can specify attributes 
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:brightness</span><span class="punct">,</span> <span class="number">0.0</span><span class="punct">..</span><span class="number">1.0</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:x</span><span class="punct">,</span> <span class="punct">-</span><span class="number">100.0</span><span class="punct">..</span><span class="number">100.0</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">randomize</span> <span class="symbol">:y</span><span class="punct">,</span> <span class="punct">-</span><span class="number">100.0</span><span class="punct">..</span><span class="number">100.0</span>
-<br />
+
 <span class="comment"># draw 50 flowers starting at the center of the canvas</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">shape</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>

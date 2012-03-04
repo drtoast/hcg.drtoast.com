@@ -30,24 +30,24 @@
 <p style="text-align: center;"><img class="size-full wp-image-17" title="paths-iterating" src="/uploads/2008/07/paths-iterating.png" alt="" width="400" height="400" /></p>
 By sending the "increment" method to a Path object, you can specify changes that will continue to add up or "drift" each time the path is drawn to the canvas.
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># create a new 400x400 pixel canvas to draw on</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">iterating.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># create a petal shape with base at (0,0), size 40x150, and bulge at 30px</span>
 <span class="ident">shape</span> <span class="punct">=</span> <span class="constant">Path</span><span class="punct">.</span><span class="ident">new</span><span class="punct">.</span><span class="ident">petal</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">150</span><span class="punct">,</span><span class="number">30</span><span class="punct">)</span>
 <span class="comment"># add a circle</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">oval</span><span class="punct">(-</span><span class="number">10</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="number">20</span><span class="punct">,</span><span class="number">20</span><span class="punct">)</span>
 <span class="comment"># color it red</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">red</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># increment shape parameters by the specified amount each iteration,</span>
 <span class="comment"># or by a random value selected from the specified range</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:rotation</span><span class="punct">,</span> <span class="number">5.0</span><span class="punct">)</span>
@@ -60,7 +60,7 @@ By sending the "increment" method to a Path object, you can specify changes that
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:saturation</span><span class="punct">,</span> <span class="punct">-</span><span class="number">0.1</span><span class="punct">..</span><span class="number">0.1</span><span class="punct">)</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:brightness</span><span class="punct">,</span> <span class="punct">-</span><span class="number">0.1</span><span class="punct">..</span><span class="number">0.1</span><span class="punct">)</span>
 <span class="ident">shape</span><span class="punct">.</span><span class="ident">increment</span><span class="punct">(</span><span class="symbol">:alpha</span><span class="punct">,</span> <span class="punct">-</span><span class="number">0.1</span><span class="punct">..</span><span class="number">0.1</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># draw 200 petals on the canvas starting at location 50,200</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="number">50</span><span class="punct">,</span><span class="number">220</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">shape</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>

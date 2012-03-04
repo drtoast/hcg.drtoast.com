@@ -29,35 +29,35 @@
   <p><p style="text-align: center;"><a href="/uploads/2008/06/color-gradients.png"><img class="size-full wp-image-13" title="color-gradients" src="/uploads/2008/06/color-gradients.png" alt="" width="400" height="400" /></a></p>
 Radial or linear gradients may be drawn by first specifying their main constituent colors, then applying to the canvas with a start and endpoint.  (warning: crashes in MacRuby 0.4)
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># FIXME: SEGFAULT!!</span>
-<br />
+
 <span class="comment"># set up the canvas and font</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">gradients.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># create a new gradient</span>
 <span class="ident">gradient</span> <span class="punct">=</span> <span class="constant">Gradient</span><span class="punct">.</span><span class="ident">new</span>
-<br />
+
 <span class="comment"># set the component colors of the gradient</span>
 <span class="ident">gradient</span><span class="punct">.</span><span class="ident">set</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">,</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">blue</span><span class="punct">,</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">red</span><span class="punct">.</span><span class="ident">darken</span><span class="punct">,</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">orange</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># draw a linear gradient starting at 50,50 and ending at 200,200</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">gradient</span><span class="punct">(</span><span class="ident">gradient</span><span class="punct">,</span> <span class="number">50</span><span class="punct">,</span><span class="number">50</span><span class="punct">,</span><span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># do not extend gradient beyond its start/endpoints</span>
 <span class="ident">gradient</span><span class="punct">.</span><span class="ident">pre</span><span class="punct">(</span><span class="constant">false</span><span class="punct">)</span>
 <span class="ident">gradient</span><span class="punct">.</span><span class="ident">post</span><span class="punct">(</span><span class="constant">false</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># draw a radial gradient starting at 200,200 with radius 100</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">radial</span><span class="punct">(</span><span class="ident">gradient</span><span class="punct">,</span> <span class="number">200</span><span class="punct">,</span><span class="number">200</span><span class="punct">,</span><span class="number">100</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># save the canvas</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
 </p>

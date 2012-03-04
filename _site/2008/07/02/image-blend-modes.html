@@ -27,30 +27,30 @@
   <span class='entry-meta'>July 2, 2008 | <a href="/tag/images/">images</a></span><br />
 
   <p><a href="/uploads/2008/07/image-blendmodes.png"><img class="aligncenter size-full wp-image-20" title="image-blendmodes" src="/uploads/2008/07/image-blendmodes.png" alt="" width="400" height="730" /></a>
-<br />
+
 You can use various Photoshop-style blend modes to composite two or more images by applying the "blend" method to an Image object.
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># set up the canvas and font</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">blend.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">730</span><span class="punct">]</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">14</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># set image width,height</span>
 <span class="ident">w</span><span class="punct">,</span><span class="ident">h</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">95</span><span class="punct">,</span><span class="number">95</span><span class="punct">]</span>
-<br />
+
 <span class="comment"># set initial drawing position</span>
 <span class="ident">x</span><span class="punct">,</span><span class="ident">y</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">0</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span> <span class="punct">-</span> <span class="ident">h</span> <span class="punct">-</span> <span class="number">10</span><span class="punct">]</span>
-<br />
+
 <span class="comment"># load and resize two images</span>
 <span class="ident">imgA</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">').</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">imgB</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">').</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># add image B to image A using each blending mode, and draw to canvas</span>
 <span class="keyword">for</span> <span class="ident">blendmode</span> <span class="keyword">in</span> <span class="punct">[</span><span class="symbol">:normal</span><span class="punct">,</span><span class="symbol">:multiply</span><span class="punct">,</span><span class="symbol">:screen</span><span class="punct">,</span><span class="symbol">:overlay</span><span class="punct">,</span><span class="symbol">:darken</span><span class="punct">,</span><span class="symbol">:lighten</span><span class="punct">,</span>
   <span class="symbol">:colordodge</span><span class="punct">,</span><span class="symbol">:colorburn</span><span class="punct">,</span><span class="symbol">:softlight</span><span class="punct">,</span><span class="symbol">:hardlight</span><span class="punct">,</span><span class="symbol">:difference</span><span class="punct">,</span><span class="symbol">:exclusion</span><span class="punct">,</span>
@@ -66,7 +66,7 @@ You can use various Photoshop-style blend modes to composite two or more images 
     <span class="ident">y</span> <span class="punct">-=</span> <span class="ident">h</span> <span class="punct">+</span> <span class="number">25</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>
-<br />
+
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
 </p>
 </div>

@@ -27,78 +27,78 @@
   <span class='entry-meta'>July 2, 2008 | <a href="/tag/images/">images</a></span><br />
 
   <p><a href="/uploads/2008/07/image-effects.png"><img class="aligncenter size-full wp-image-24" title="image-effects" src="/uploads/2008/07/image-effects.png" alt="" width="400" height="400" /></a>
-<br />
+
 You can apply various Photoshop-style filters to images, then render them to the canvas.
-<br />
+
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># set up the canvas and font</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">effects.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">white</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">font</span><span class="punct">('</span><span class="string">Skia</span><span class="punct">')</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">fontsize</span><span class="punct">(</span><span class="number">14</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">fill</span><span class="punct">(</span><span class="constant">Color</span><span class="punct">.</span><span class="ident">black</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># load image file</span>
 <span class="ident">img</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">v2.jpg</span><span class="punct">')</span>
-<br />
+
 <span class="comment"># set image width/height, starting position, and increment position</span>
 <span class="ident">w</span><span class="punct">,</span><span class="ident">h</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">100</span><span class="punct">,</span><span class="number">100</span><span class="punct">]</span>
 <span class="ident">x</span><span class="punct">,</span><span class="ident">y</span> <span class="punct">=</span> <span class="punct">[</span><span class="number">0</span><span class="punct">,</span><span class="number">290</span><span class="punct">]</span>
 <span class="ident">xoffset</span> <span class="punct">=</span> <span class="number">105</span>
 <span class="ident">yoffset</span> <span class="punct">=</span> <span class="number">130</span>
-<br />
+
 <span class="comment"># ORIGINAL image, resized to fit within w,h:</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">original</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># CRYSTALLIZE: apply a &quot;crystallize&quot; effect with the given radius</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">crystallize</span><span class="punct">(</span><span class="number">5.0</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">crystallize</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># BLOOM: apply a &quot;bloom&quot; effect with the given radius and intensity</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">bloom</span><span class="punct">(</span><span class="number">10</span><span class="punct">,</span> <span class="number">1.0</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">bloom</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># EDGES: detect edges</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">edges</span><span class="punct">(</span><span class="number">10</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">edges</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># (go to next row)</span>
 <span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
 <span class="ident">y</span> <span class="punct">-=</span> <span class="ident">yoffset</span>
-<br />
+
 <span class="comment"># POSTERIZE: reduce image to the specified number of colors</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">posterize</span><span class="punct">(</span><span class="number">8</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">posterize</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># TWIRL: rotate around x,y with radius and angle</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">twirl</span><span class="punct">(</span><span class="number">35</span><span class="punct">,</span><span class="number">50</span><span class="punct">,</span><span class="number">40</span><span class="punct">,</span><span class="number">90</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">twirl</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># EDGEWORK: simulate a woodcut print</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">rect</span><span class="punct">(</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">width</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">height</span><span class="punct">)</span> <span class="comment"># needs a black background</span>
@@ -106,7 +106,7 @@ You can apply various Photoshop-style filters to images, then render them to the
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">edgework</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># DISPLACEMENT: use a second image as a displacement map</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img2</span> <span class="punct">=</span> <span class="constant">Image</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">italy.jpg</span><span class="punct">').</span><span class="ident">resize</span><span class="punct">(</span><span class="ident">img</span><span class="punct">.</span><span class="ident">width</span><span class="punct">,</span><span class="ident">img</span><span class="punct">.</span><span class="ident">height</span><span class="punct">)</span>
@@ -114,39 +114,39 @@ You can apply various Photoshop-style filters to images, then render them to the
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">displacement</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># (go to next row)</span>
 <span class="ident">x</span> <span class="punct">=</span> <span class="number">0</span>
 <span class="ident">y</span> <span class="punct">-=</span> <span class="ident">yoffset</span>
-<br />
+
 <span class="comment"># DOTSCREEN: simulate a dot screen: center point, angle(0-360), width(1-50), and sharpness(0-1)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">dotscreen</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">0</span><span class="punct">,</span><span class="number">45</span><span class="punct">,</span><span class="number">5</span><span class="punct">,</span><span class="number">0.7</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">dotscreen</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># SHARPEN: sharpen using the given radius and intensity</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">sharpen</span><span class="punct">(</span><span class="number">2.0</span><span class="punct">,</span><span class="number">2.0</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">sharpen</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># BLUR: apply a gaussian blur with the given radius</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">blur</span><span class="punct">(</span><span class="number">3.0</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">blur</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># MOTION BLUR: apply a motion blur with the given radius and angle</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">reset</span><span class="punct">.</span><span class="ident">fit</span><span class="punct">(</span><span class="ident">w</span><span class="punct">,</span><span class="ident">h</span><span class="punct">)</span>
 <span class="ident">img</span><span class="punct">.</span><span class="ident">motionblur</span><span class="punct">(</span><span class="number">10.0</span><span class="punct">,</span><span class="number">90</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">draw</span><span class="punct">(</span><span class="ident">img</span><span class="punct">,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">text</span><span class="punct">(&quot;</span><span class="string">motion blur</span><span class="punct">&quot;,</span><span class="ident">x</span><span class="punct">,</span><span class="ident">y</span><span class="punct">-</span><span class="number">15</span><span class="punct">)</span>
 <span class="ident">x</span> <span class="punct">+=</span> <span class="ident">xoffset</span>
-<br />
+
 <span class="comment"># save the canvas</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>
 </p>

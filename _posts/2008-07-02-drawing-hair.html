@@ -9,32 +9,32 @@ tags:
 <p style="text-align: center;"><a href="/uploads/2008/07/drawing-hair.png"><img class="size-full wp-image-30 aligncenter" title="drawing-hair" src="/uploads/2008/07/drawing-hair.png" alt="" width="400" height="400" /></a></p>
 Applying the "hair" method to a Rope object will render organic flowing threads to the canvas.
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
-<br />
+
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
 <span class="ident">include</span> <span class="constant">HotCocoa</span>
 <span class="ident">include</span> <span class="constant">Graphics</span>
-<br />
+
 <span class="comment"># create a new 400x400 pixel canvas to draw on</span>
 <span class="ident">canvas</span> <span class="punct">=</span> <span class="constant">Canvas</span><span class="punct">.</span><span class="ident">new</span> <span class="symbol">:type</span> <span class="punct">=&gt;</span> <span class="symbol">:image</span><span class="punct">,</span> <span class="symbol">:filename</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">hair.png</span><span class="punct">',</span> <span class="symbol">:size</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">400</span><span class="punct">,</span><span class="number">400</span><span class="punct">]</span>
-<br />
+
 <span class="comment"># choose a random color and set the background to a darker variant</span>
 <span class="ident">clr</span> <span class="punct">=</span> <span class="constant">Color</span><span class="punct">.</span><span class="ident">random</span><span class="punct">.</span><span class="ident">a</span><span class="punct">(</span><span class="number">0.5</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">background</span><span class="punct">(</span><span class="ident">clr</span><span class="punct">.</span><span class="ident">copy</span><span class="punct">.</span><span class="ident">darken</span><span class="punct">(</span><span class="number">0.6</span><span class="punct">))</span>
-<br />
+
 <span class="comment"># create a new rope with 200 fibers</span>
 <span class="ident">rope</span> <span class="punct">=</span> <span class="constant">Rope</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">)</span>
 <span class="ident">rope</span><span class="punct">.</span><span class="ident">width</span> <span class="punct">=</span> <span class="number">100</span>
 <span class="ident">rope</span><span class="punct">.</span><span class="ident">fibers</span> <span class="punct">=</span> <span class="number">200</span>
 <span class="ident">rope</span><span class="punct">.</span><span class="ident">strokewidth</span> <span class="punct">=</span> <span class="number">0.4</span>
 <span class="ident">rope</span><span class="punct">.</span><span class="ident">roundness</span> <span class="punct">=</span> <span class="number">3.0</span>
-<br />
+
 <span class="comment"># randomly rotate the canvas from its center</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span><span class="punct">,</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span><span class="punct">/</span><span class="number">2</span><span class="punct">)</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">rotate</span><span class="punct">(</span><span class="ident">random</span><span class="punct">(</span><span class="number">0</span><span class="punct">,</span><span class="number">360</span><span class="punct">))</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">translate</span><span class="punct">(-</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">width</span><span class="punct">/</span><span class="number">2</span><span class="punct">,-</span><span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span><span class="punct">/</span><span class="number">2</span><span class="punct">)</span>
-<br />
+
 <span class="comment"># draw 50 ropes</span>
 <span class="ident">ropes</span> <span class="punct">=</span> <span class="number">50</span>
 <span class="keyword">for</span> <span class="ident">i</span> <span class="keyword">in</span> <span class="number">0</span><span class="punct">..</span><span class="ident">ropes</span> <span class="keyword">do</span>
@@ -45,6 +45,6 @@ Applying the "hair" method to a Rope object will render organic flowing threads 
     <span class="ident">rope</span><span class="punct">.</span><span class="ident">y1</span> <span class="punct">=</span> <span class="ident">canvas</span><span class="punct">.</span><span class="ident">height</span> <span class="punct">+</span> <span class="number">100</span>
     <span class="ident">rope</span><span class="punct">.</span><span class="ident">hair</span>                                 <span class="comment"># draw rope in organic &quot;hair&quot; style</span>
 <span class="keyword">end</span>
-<br />
+
 <span class="comment"># save the canvas</span>
 <span class="ident">canvas</span><span class="punct">.</span><span class="ident">save</span></pre>

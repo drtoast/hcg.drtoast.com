@@ -24,18 +24,18 @@
   <div id="content" class="narrowcolumn">
     
   <div class='post'>
-    <h2 class='entry-title'><a href="/2011/04/27/standalone-library">Standalone Library</a></h2>
+    <h2 class='entry-title'><a href="/standalone-library">Standalone Library</a></h2>
     <small>April 27, 2011 | <a href="/tag/news/">news</a></small>
     <p>A little history and an update: after <a href="http://www.infoether.com">Rich Kilmer</a> integrated my graphics library into Apple's MacRuby project as part of the "HotCocoa" library, the HotCocoa project was split out from MacRuby into its own gem at <a href="https://github.com/richkilmer/hotcocoa">github.com/richkilmer/hotcocoa</a>. Then, <a href="http://merbist.com">Matt Aimonetti</a> extracted the graphics library out of HotCocoa into its OWN standalone library, MacRuby Graphics.  Here's my fork of that project, where future development efforts will be directed:  <a href="https://github.com/drtoast/macruby_graphics">github.com/drtoast/macruby_graphics</a>
 </p>
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></h2>
+    <h2 class='entry-title'><a href="/particlesflowers">Particles/Flowers</a></h2>
     <small>July 2, 2008 | <a href="/tag/drawing/">drawing</a></small>
     <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-particles1.png"><img class="size-full wp-image-36 aligncenter" title="drawing-particles1" src="/uploads/2008/07/drawing-particles1.png" alt="" width="400" height="400" /></a></p>
+<p>This example uses a system of particles that travel upwards from the bottom of the canvas. The paths taken by the particles are rendered as stems, and a "flower" is drawn at each endpoint.</p>
 
-This example uses a system of particles that travel upwards from the bottom of the canvas. Â The paths taken by the particles are rendered as stems, and a "flower" is drawn at each endpoint.
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -109,11 +109,12 @@ This example uses a system of particles that travel upwards from the bottom of t
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/text-spirograph">Text Spirograph</a></h2>
+    <h2 class='entry-title'><a href="/text-spirograph">Text Spirograph</a></h2>
     <small>July 2, 2008 | <a href="/tag/text/">text</a></small>
     <p><a href="/uploads/2008/07/text-spirograph.png"><img class="aligncenter size-full wp-image-34" title="text-spirograph" src="/uploads/2008/07/text-spirograph.png" alt="" width="400" height="400" /></a>
 
-Text can be positioned and scaled arbitrarily on the canvas, rendered using any font that is installed on your system.
+<p>Text can be positioned and scaled arbitrarily on the canvas, rendered using any font that is installed on your system.</p>
+
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -148,7 +149,7 @@ Text can be positioned and scaled arbitrarily on the canvas, rendered using any 
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/iterating-paths">Iterating Paths</a></h2>
+    <h2 class='entry-title'><a href="/iterating-paths">Iterating Paths</a></h2>
     <small>July 2, 2008 | <a href="/tag/drawing/">drawing</a></small>
     <p><a href="/uploads/2008/07/paths-iterating.png"></a><a href="http://rcg.drtoast.com/wp-content/uploads/2008/06/paths-iterating.png"> </a>
 <p style="text-align: center;"><img class="size-full wp-image-17" title="paths-iterating" src="/uploads/2008/07/paths-iterating.png" alt="" width="400" height="400" /></p>
@@ -193,10 +194,10 @@ By sending the "increment" method to a Path object, you can specify changes that
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></h2>
+    <h2 class='entry-title'><a href="/randomizing-paths">Randomizing Paths</a></h2>
     <small>July 2, 2008 | <a href="/tag/drawing/">drawing</a></small>
     <p><p style="text-align: center;"><a href="/uploads/2008/06/paths-randomizing1.png"><img class="size-full wp-image-9" title="paths-randomizing1" src="/uploads/2008/06/paths-randomizing1.png" alt="" width="400" height="400" /></a></p>
-By applying the "randomize" method to a Path object, you can specify attributes that should be randomized each time the object is drawn to the canvas.
+<p>By applying the "randomize" method to a Path object, you can specify attributes that should be randomized each time the object is drawn to the canvas.</p>
 
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
@@ -241,13 +242,11 @@ By applying the "randomize" method to a Path object, you can specify attributes 
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/substrate">Substrate</a></h2>
+    <h2 class='entry-title'><a href="/substrate">Substrate</a></h2>
     <small>July 2, 2008 | <a href="/tag/drawing/">drawing</a></small>
     <p><a href="/uploads/2008/07/drawing-substrate.png"><img class="aligncenter size-full wp-image-32" title="drawing-substrate" src="/uploads/2008/07/drawing-substrate.png" alt="" width="400" height="400" /></a>
 
-This example is based on "Substrate" by Jared Tarbell (<a href="http://complexification.net" target="_blank">complexification.net</a>).  Some modifications were made to the color rendering algorithm.
-
-(Warning: the new MacRuby version eats a lot more memory than the older RubyCocoa version, so you may want to lower the number of cracks or frames)
+<p>This example is based on "Substrate" by Jared Tarbell (<a href="http://complexification.net" target="_blank">complexification.net</a>).  Some modifications were made to the color rendering algorithm. (Warning: the new MacRuby version eats a lot more memory than the older RubyCocoa version, so you may want to lower the number of cracks or frames)</p>
 
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
@@ -457,10 +456,10 @@ This example is based on "Substrate" by Jared Tarbell (<a href="http://complexif
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/drawing-hair">Drawing Hair</a></h2>
+    <h2 class='entry-title'><a href="/drawing-hair">Drawing Hair</a></h2>
     <small>July 2, 2008 | <a href="/tag/drawing/">drawing</a></small>
     <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-hair.png"><img class="size-full wp-image-30 aligncenter" title="drawing-hair" src="/uploads/2008/07/drawing-hair.png" alt="" width="400" height="400" /></a></p>
-Applying the "hair" method to a Rope object will render organic flowing threads to the canvas.
+<p>Applying the "hair" method to a Rope object will render organic flowing threads to the canvas.</p>
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -505,10 +504,10 @@ Applying the "hair" method to a Rope object will render organic flowing threads 
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/drawing-ribbons">Drawing Ribbons</a></h2>
+    <h2 class='entry-title'><a href="/drawing-ribbons">Drawing Ribbons</a></h2>
     <small>July 2, 2008 | <a href="/tag/drawing/">drawing</a></small>
     <p><p style="text-align: center;"><a href="/uploads/2008/07/drawing-ribbons.png"><img class="size-full wp-image-28 aligncenter" title="drawing-ribbons" src="/uploads/2008/07/drawing-ribbons.png" alt="" width="400" height="400" /></a></p>
-Applying the "ribbon" method to a Rope object will render smooth, flowing ribbons to the canvas.
+<p>Applying the "ribbon" method to a Rope object will render smooth, flowing ribbons to the canvas.</p>
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -553,11 +552,11 @@ Applying the "ribbon" method to a Rope object will render smooth, flowing ribbon
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/image-moving-and-scaling">Image Moving and Scaling</a></h2>
+    <h2 class='entry-title'><a href="/image-moving-and-scaling">Image Moving and Scaling</a></h2>
     <small>July 2, 2008 | <a href="/tag/images/">images</a></small>
     <p><a href="/uploads/2008/07/image-moving.png"><img class="aligncenter size-full wp-image-26" title="image-moving" src="/uploads/2008/07/image-moving.png" alt="" width="400" height="400" /></a>
 
-Various scaling and moving operations are available for images.  You can scale an image proportionally by a percentage, scale it to fit proportionally within a bounding box, or scale width and height to fit exactly within a bounding box.
+<p>Various scaling and moving operations are available for images.  You can scale an image proportionally by a percentage, scale it to fit proportionally within a bounding box, or scale width and height to fit exactly within a bounding box.</p>
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -623,11 +622,10 @@ Various scaling and moving operations are available for images.  You can scale a
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/image-effects">Image Effects</a></h2>
+    <h2 class='entry-title'><a href="/image-effects">Image Effects</a></h2>
     <small>July 2, 2008 | <a href="/tag/images/">images</a></small>
     <p><a href="/uploads/2008/07/image-effects.png"><img class="aligncenter size-full wp-image-24" title="image-effects" src="/uploads/2008/07/image-effects.png" alt="" width="400" height="400" /></a>
-
-You can apply various Photoshop-style filters to images, then render them to the canvas.
+<p>You can apply various Photoshop-style filters to images, then render them to the canvas.</p>
 
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
@@ -752,12 +750,12 @@ You can apply various Photoshop-style filters to images, then render them to the
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/image-color-adjustments">Image Color Adjustments</a></h2>
+    <h2 class='entry-title'><a href="/image-color-adjustments">Image Color Adjustments</a></h2>
     <small>July 2, 2008 | <a href="/tag/color/">color</a>, <a href="/tag/images/">images</a></small>
     <p><a style="text-decoration: none;" href="/uploads/2008/07/image-colors.png"><span style="color: #000000;">
 </span><img class="aligncenter size-full wp-image-21" style="text-decoration: underline;" title="image-colors" src="/uploads/2008/07/image-colors.png" alt="" width="400" height="400" /></a>
 
-You can apply various color adjustments to a loaded image, then render it to the canvas. Â You can also grab colors from an image for use in a gradient or to paint objects on the canvas.
+<p>You can apply various color adjustments to a loaded image, then render it to the canvas. You can also grab colors from an image for use in a gradient or to paint objects on the canvas.</p>
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -868,11 +866,11 @@ You can apply various color adjustments to a loaded image, then render it to the
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/07/02/image-blend-modes">Image Blend Modes</a></h2>
+    <h2 class='entry-title'><a href="/image-blend-modes">Image Blend Modes</a></h2>
     <small>July 2, 2008 | <a href="/tag/images/">images</a></small>
     <p><a href="/uploads/2008/07/image-blendmodes.png"><img class="aligncenter size-full wp-image-20" title="image-blendmodes" src="/uploads/2008/07/image-blendmodes.png" alt="" width="400" height="730" /></a>
 
-You can use various Photoshop-style blend modes to composite two or more images by applying the "blend" method to an Image object.
+<p>You can use various Photoshop-style blend modes to composite two or more images by applying the "blend" method to an Image object.</p>
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">require</span> <span class="punct">'</span><span class="string">hotcocoa/graphics</span><span class="punct">'</span>
@@ -916,10 +914,10 @@ You can use various Photoshop-style blend modes to composite two or more images 
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/06/30/gradients">Gradients</a></h2>
+    <h2 class='entry-title'><a href="/gradients">Gradients</a></h2>
     <small>June 30, 2008 | <a href="/tag/color/">color</a></small>
     <p><p style="text-align: center;"><a href="/uploads/2008/06/color-gradients.png"><img class="size-full wp-image-13" title="color-gradients" src="/uploads/2008/06/color-gradients.png" alt="" width="400" height="400" /></a></p>
-Radial or linear gradients may be drawn by first specifying their main constituent colors, then applying to the canvas with a start and endpoint.  (warning: crashes in MacRuby 0.4)
+<p>Radial or linear gradients may be drawn by first specifying their main constituent colors, then applying to the canvas with a start and endpoint.  (warning: crashes in MacRuby 0.4)</p>
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
 <span class="ident">framework</span> <span class="punct">'</span><span class="string">cocoa</span><span class="punct">'</span>
@@ -956,10 +954,10 @@ Radial or linear gradients may be drawn by first specifying their main constitue
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/06/30/color-parsing">Color Parsing</a></h2>
+    <h2 class='entry-title'><a href="/color-parsing">Color Parsing</a></h2>
     <small>June 30, 2008 | <a href="/tag/color/">color</a>, <a href="/tag/images/">images</a></small>
     <p><p style="text-align: center;"><img class="size-full wp-image-16" title="color-parsing" src="/uploads/2008/07/color-parsing.png" alt="" width="400" height="400" /></p>
-<p style="text-align: left;">You can load an image, grab an array of colors from it, and then apply those colors to other objects on the canvas.</p>
+<p>You can load an image, grab an array of colors from it, and then apply those colors to other objects on the canvas.</p>
 
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
@@ -995,11 +993,11 @@ Radial or linear gradients may be drawn by first specifying their main constitue
   </div>
 
   <div class='post'>
-    <h2 class='entry-title'><a href="/2008/06/29/color-rules">Color Rules</a></h2>
+    <h2 class='entry-title'><a href="/color-rules">Color Rules</a></h2>
     <small>June 29, 2008 | <a href="/tag/color/">color</a></small>
     <p><p style="text-align: center;"><span style="color: #0000ee; text-decoration: underline;"><a href="/uploads/2008/06/color-rules.png"></a><a href="/uploads/2008/07/color-harmony.png"><img class="aligncenter size-full wp-image-18" title="color-harmony" src="/uploads/2008/07/color-harmony.png" alt="" width="400" height="400" /></a>
 </span></p>
-<p style="text-align: left;">Various sets of colors can be generated from a single starting color by using the various classical color harmony schemes.Â  For more information, see <a href="http://en.wikipedia.org/wiki/Color_theory" target="_blank">Color Theory</a> on Wikipedia.</p>
+<p>Various sets of colors can be generated from a single starting color by using the various classical color harmony schemes.Â  For more information, see <a href="http://en.wikipedia.org/wiki/Color_theory" target="_blank">Color Theory</a> on Wikipedia.</p>
 
 <pre><span class="comment">#!/usr/local/bin/macruby</span>
 
@@ -1065,15 +1063,15 @@ Radial or linear gradients may be drawn by first specifying their main constitue
         <h2>Recent</h2>
         <ul>
           
-          <li class="page-item"><a href="/2011/04/27/standalone-library">Standalone Library</a></li>
+          <li class="page-item"><a href="/standalone-library">Standalone Library</a></li>
           
-          <li class="page-item"><a href="/2008/07/02/particlesflowers">Particles/Flowers</a></li>
+          <li class="page-item"><a href="/particlesflowers">Particles/Flowers</a></li>
           
-          <li class="page-item"><a href="/2008/07/02/text-spirograph">Text Spirograph</a></li>
+          <li class="page-item"><a href="/text-spirograph">Text Spirograph</a></li>
           
-          <li class="page-item"><a href="/2008/07/02/iterating-paths">Iterating Paths</a></li>
+          <li class="page-item"><a href="/iterating-paths">Iterating Paths</a></li>
           
-          <li class="page-item"><a href="/2008/07/02/randomizing-paths">Randomizing Paths</a></li>
+          <li class="page-item"><a href="/randomizing-paths">Randomizing Paths</a></li>
           
         </ul>
       </li>

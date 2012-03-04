@@ -1,6 +1,6 @@
 pygments:    false
 markdown:    maruku
-permalink:   /:year/:month/:day/:title.html
+permalink:   /:title.html
 multiviews:  true
 paginate:    20
 

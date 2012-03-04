@@ -23,7 +23,7 @@ Author URI: http://binarybonsai.com/
 body {
 	font-size: 62.5%; /* Resets 1em to 10px */
 	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
-	background: #d5d6d7 url('/images/kubrickbgcolor.jpg');
+	background: #7B5A0B url('/images/kubrickbgcolor.jpg');
 	color: #333;
 	text-align: center;
 	}
@@ -35,7 +35,7 @@ body {
 	}
 
 #header {
-	background: #73a0c5 url('/images/kubrickheader.jpg') no-repeat bottom center;
+	background: #7B5A0B url('/images/kubrickheader.jpg') no-repeat bottom center;
 	}
 
 #headerimg 	{ 
@@ -221,7 +221,6 @@ body {
 	}
 
 #header {
-	background-color: #73a0c5;
 	margin: 0 0 0 1px; 
 	padding: 0; 
 	height: 200px; 
